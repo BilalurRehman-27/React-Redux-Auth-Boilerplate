@@ -1,38 +1,33 @@
-
-// Actions
-const INCREMENT = 'redux/counter/INCREMENT'
-const DECREMENT = 'redux/counter/DECREMENT'
-
+import ACTIONS from './app.constants';
 
 // Reducer
 const counter = (state = 1, action) => {
-    switch (action.type) {
-        case INCREMENT:
-            return state + 1
-        case DECREMENT:
-            return state - 1
-        default:
-            return state
-    }
-}
+  switch (action.type) {
+    case ACTIONS.INCREMENT:
+      return state + 1;
+    case ACTIONS.DECREMENT:
+      return state - 1;
+    default:
+      return state;
+  }
+};
 
-export default counter
-
+export default counter;
 
 // Action Creators
 const increment = () => {
-    return {
-        type: INCREMENT
-    }
-}
+  return {
+    type: ACTIONS.INCREMENT,
+  };
+};
 
 const decrement = () => {
-    return {
-        type: DECREMENT
-    }
-}
+  return {
+    type: ACTIONS.DECREMENT,
+  };
+};
 
 export const actions = {
-    increment,
-    decrement
-}
+  increment,
+  decrement,
+};

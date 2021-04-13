@@ -1,58 +1,63 @@
-import React from 'react'
-import { useSelector, useDispatch } from 'react-redux'
+import React, { useEffect, useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { Box } from '@material-ui/core';
+import { makeStyles } from '@material-ui/core/styles';
+import { actions } from '../../redux/user';
+import Loader from '../../Components/Loader';
+import Accordion from '../../Components/Accordion';
 
-import { makeStyles } from '@material-ui/core/styles'
-import Card from '@material-ui/core/Card'
-import CardActionArea from '@material-ui/core/CardActionArea'
-import CardActions from '@material-ui/core/CardActions'
-import CardContent from '@material-ui/core/CardContent'
-import CardMedia from '@material-ui/core/CardMedia'
-import Button from '@material-ui/core/Button'
-import Typography from '@material-ui/core/Typography'
-
-import { actions } from '../../redux/counter'
-
-
-const useStyles = makeStyles({
-    card: {
-        maxWidth: 345,
-    },
-    media: {
-        height: 140,
-    },
-})
+const useStyles = makeStyles((theme) => ({
+  container: {
+    padding: 10,
+    backgroundColor: theme.palette.primary.light,
+  },
+}));
 
 export default function Home() {
-    const classes = useStyles()
-    const counter = useSelector(state => state.counter)
-    const dispatch = useDispatch()
+  const classes = useStyles();
+  const [list, setList] = useState([]);
+  const isLoading = useSelector((state) => {
+    return state.user.isFetching;
+  });
+  const mainCategoriesList = useSelector((state) => {
+    return state.user.mainCategories;
+  });
+  const waitersList = useSelector((state) => {
+    return state.user.waiters;
+  });
 
-    return (
-        <Card className={classes.card}>
-            <CardActionArea>
-                <CardMedia
-                    className={classes.media}
-                    image="la_la_land_silhouette-wide.jpg"
-                    title="la la land"
-                />
-                <CardContent>
-                    <Typography gutterBottom variant="h5" component="h2">
-                        {counter}
-                    </Typography>
-                    <Typography variant="body2" color="textSecondary" component="p">
-                        Welcome logged in user!
-                        You can use this feature rich counter app now!!
-            </Typography>
-                </CardContent>
-            </CardActionArea>
-            <CardActions>
-                <Button size="small" color="primary" onClick={() => dispatch(actions.increment())}>
-                    Increment ++
-          </Button>
-                <Button size="small" color="primary" onClick={() => dispatch(actions.decrement())}>
-                    Decrement --
-          </Button>
-            </CardActions>
-        </Card>
-    )
+  const tablesList = useSelector((state) => {
+    return state.user.tables;
+  });
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(actions.getMainCategoriesBegin());
+    dispatch(actions.getTablesBegin());
+    dispatch(actions.getWaitersBegin());
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (
+      mainCategoriesList &&
+      mainCategoriesList.data.length &&
+      tablesList &&
+      tablesList.data.length &&
+      waitersList &&
+      waitersList.data.length
+    ) {
+      setList(() => [mainCategoriesList, waitersList, tablesList]);
+    }
+  }, [mainCategoriesList, waitersList, tablesList]);
+  console.log(list);
+  if (isLoading) {
+    return <Loader />;
+  }
+  return (
+    <Box className={classes.container}>
+      {list.map((item, index) => (
+        <Accordion name={item.name} key={index} data={item.data} />
+      ))}
+    </Box>
+  );
 }
