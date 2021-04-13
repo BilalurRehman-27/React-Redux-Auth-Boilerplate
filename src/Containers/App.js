@@ -13,7 +13,9 @@ export default function App() {
     (state) => {
       const loggedInUser = JSON.parse(localStorage.getItem('redux'));
 
-      return !!loggedInUser.isLoggedIn || state.user.isLoggedIn;
+      return (
+        (loggedInUser && !!loggedInUser.isLoggedIn) || state.user.isLoggedIn
+      );
     }
     // && state.user.jwt !== null
   );
