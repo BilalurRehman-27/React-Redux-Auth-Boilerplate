@@ -165,7 +165,11 @@ const signIn = (userObj) => (dispatch) => {
   });
   axios
     .post(
-      `http://www.posns.somee.com/api/Login?userName=${userObj.username}&password=${userObj.password}`
+      `http://www.posns.somee.com/api/Login?userName=${userObj.username}&password=${userObj.password}`,
+      {},
+      {
+        headers: { 'Content-Security-Policy': 'upgrade-insecure-requests' },
+      }
     )
     .then(function (response) {
       // handle success
