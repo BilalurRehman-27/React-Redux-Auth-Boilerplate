@@ -34,7 +34,7 @@ export default function CheckboxList(props) {
 
     setChecked(newChecked);
   };
-  console.log(checked);
+
   return (
     <List className={classes.root}>
       {data.map((value) => {

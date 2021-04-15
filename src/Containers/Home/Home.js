@@ -29,6 +29,20 @@ export default function Home() {
   const tablesList = useSelector((state) => {
     return state.user.tables;
   });
+
+  const selectedCategoryId = useSelector((state) => {
+    return state.user.selectedCategory;
+  });
+
+  const subCategoryFetching = useSelector((state) => {
+    console.log(state.user.subCategories?.subCategoryFetching);
+    return state.user.subCategories?.subCategoryFetching;
+  });
+
+  const selectedSubCategoriesById = useSelector((state) => {
+    console.log(state.user.subCategories?.[selectedCategoryId]);
+    return state.user.subCategories?.[selectedCategoryId];
+  });
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -49,14 +63,26 @@ export default function Home() {
       setList(() => [mainCategoriesList, waitersList, tablesList]);
     }
   }, [mainCategoriesList, waitersList, tablesList]);
-  console.log(list);
+
+  const handleOnChange = (item) => {
+    dispatch(actions.getSubCategoriesByIdBegin(item.id));
+  };
+
   if (isLoading) {
     return <Loader />;
   }
+
   return (
     <Box className={classes.container}>
       {list.map((item, index) => (
-        <Accordion name={item.name} key={index} data={item.data} />
+        <Accordion
+          name={item.name}
+          key={index}
+          data={item.data}
+          onClick={handleOnChange}
+          subCategories={selectedSubCategoriesById}
+          subCategoryFetching={subCategoryFetching}
+        />
       ))}
     </Box>
   );

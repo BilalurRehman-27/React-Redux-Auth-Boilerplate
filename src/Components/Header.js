@@ -54,7 +54,7 @@ export default function Header({ isLoggedIn }) {
     ) : (
       <Button
         component={RouterLink}
-        to='/signin'
+        to='/'
         color='primary'
         variant='outlined'
         className={classes.link}

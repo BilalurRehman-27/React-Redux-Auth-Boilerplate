@@ -1,6 +1,6 @@
 import axios from 'axios';
 import ACTIONS from './app.constants';
-const BASE_URL = 'http://www.posns.somee.com/api';
+const BASE_URL = 'https://www.posns.somee.com/api';
 // Reducer
 
 const initialState = {
@@ -130,6 +130,52 @@ const currentUser = (state = initialState, action) => {
         isError: true,
       };
 
+    case ACTIONS.GET_SUBCATEGORIES_BY_ID.PENDING:
+      return {
+        ...state,
+        subCategories: {
+          ...state.subCategories,
+          subCategoryFetching: true,
+        },
+      };
+    case ACTIONS.GET_SUBCATEGORIES_BY_ID.SUCCESS:
+      const categoryId = action.categoryId;
+      const formattedSubCategories = action.data.map((item) => {
+        return {
+          ...item,
+          id: item.itemCode,
+        };
+      });
+
+      return {
+        ...state,
+        subCategories: {
+          // list: [
+          //   ...state.categoryId,
+          //   ...state.subCategories.formattedCategories,
+          // ],
+          ...state.subCategories,
+          subCategoryFetching: false,
+          name: 'SubCategories',
+          categoryId: action.categoryId,
+          [action.categoryId]: formattedSubCategories,
+        },
+      };
+    case ACTIONS.GET_SUBCATEGORIES_BY_ID.ERROR:
+      return {
+        ...state,
+        subCategories: {
+          subCategoryFetching: false,
+        },
+        isError: true,
+      };
+
+    case ACTIONS.SET_SELECTED_CATEGORY_ID: {
+      return {
+        ...state,
+        selectedCategory: action.id,
+      };
+    }
     default:
       return state;
   }
@@ -263,7 +309,7 @@ const getMainCategoriesBegin = () => (dispatch) => {
       // handle error
       console.log(error.response);
       dispatch({
-        type: ACTIONS.ACTIONS.GET_MAIN_CATEGORIES.ERROR,
+        type: ACTIONS.GET_MAIN_CATEGORIES.ERROR,
         loading: false,
         error: true,
       });
@@ -296,7 +342,7 @@ const getTablesBegin = () => (dispatch) => {
       // handle error
       console.log(error.response);
       dispatch({
-        type: ACTIONS.ACTIONS.GET_TABLES.ERROR,
+        type: ACTIONS.GET_TABLES.ERROR,
         loading: false,
         error: true,
       });
@@ -329,7 +375,47 @@ const getWaitersBegin = () => (dispatch) => {
       // handle error
       console.log(error.response);
       dispatch({
-        type: ACTIONS.ACTIONS.GET_WAITERS.ERROR,
+        type: ACTIONS.GET_WAITERS.ERROR,
+        loading: false,
+        error: true,
+      });
+    })
+    .then(function () {
+      // always executed
+    });
+};
+
+const getSubCategoriesByIdBegin = (id) => (dispatch) => {
+  dispatch({
+    type: ACTIONS.GET_SUBCATEGORIES_BY_ID_BEGIN,
+  });
+
+  dispatch({
+    type: ACTIONS.SET_SELECTED_CATEGORY_ID,
+    id,
+  });
+
+  dispatch({
+    type: ACTIONS.GET_SUBCATEGORIES_BY_ID.PENDING,
+    loading: true,
+  });
+  axios({
+    method: 'get',
+    url: `${BASE_URL}/Items/${id}`,
+  })
+    .then(function (response) {
+      dispatch({
+        type: ACTIONS.GET_SUBCATEGORIES_BY_ID.SUCCESS,
+        loading: false,
+        data: response.data,
+        categoryId: id,
+      });
+    })
+    .catch(function (error) {
+      // handle error
+      console.log(error.response);
+      dispatch({
+        type: ACTIONS.GET_SUBCATEGORIES_BY_ID.ERROR,
         loading: false,
         error: true,
       });
@@ -361,4 +447,5 @@ export const actions = {
   getMainCategoriesBegin,
   getTablesBegin,
   getWaitersBegin,
+  getSubCategoriesByIdBegin,
 };

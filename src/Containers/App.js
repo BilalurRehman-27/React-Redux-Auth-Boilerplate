@@ -27,7 +27,7 @@ export default function App() {
         isLoggedIn === true ? (
           <Component {...props} />
         ) : (
-          <Redirect to='/signin' />
+          <Redirect exact to='/' />
         )
       }
     />

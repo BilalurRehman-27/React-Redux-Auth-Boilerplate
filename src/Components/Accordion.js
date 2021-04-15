@@ -33,7 +33,13 @@ const useStyles = makeStyles((theme) => ({
 
 export default function SimpleAccordion(props) {
   const classes = useStyles();
-  const { name, data } = props;
+  const [expanded, setExpanded] = React.useState('panel_0');
+  const { name, data, onClick, subCategories, subCategoryFetching } = props;
+
+  const handleOnChange = (item, isExpanded) => {
+    setExpanded(isExpanded ? item.id : false);
+    onClick(item);
+  };
 
   return (
     <>
@@ -51,7 +57,10 @@ export default function SimpleAccordion(props) {
             data.map((item) => (
               <div className={classes.padding} key={item.id}>
                 <AccordionDetails className={classes.innerRoot}>
-                  <Accordion>
+                  <Accordion
+                    expanded={expanded === item.id}
+                    onChange={() => handleOnChange(item, expanded)}
+                  >
                     <AccordionSummary
                       expandIcon={<ExpandMoreIcon />}
                       aria-controls='panel1a-content'
@@ -62,7 +71,16 @@ export default function SimpleAccordion(props) {
                         {item.name}
                       </Typography>
                     </AccordionSummary>
-                    <AccordionDetails></AccordionDetails>
+                    <AccordionDetails>
+                      {subCategoryFetching ? (
+                        <>Loading...</>
+                      ) : (
+                        !!subCategories &&
+                        subCategories.length && (
+                          <ListView data={subCategories} />
+                        )
+                      )}
+                    </AccordionDetails>
                   </Accordion>
                 </AccordionDetails>
               </div>
