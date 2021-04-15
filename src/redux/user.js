@@ -139,7 +139,6 @@ const currentUser = (state = initialState, action) => {
         },
       };
     case ACTIONS.GET_SUBCATEGORIES_BY_ID.SUCCESS:
-      const categoryId = action.categoryId;
       const formattedSubCategories = action.data.map((item) => {
         return {
           ...item,
@@ -150,10 +149,6 @@ const currentUser = (state = initialState, action) => {
       return {
         ...state,
         subCategories: {
-          // list: [
-          //   ...state.categoryId,
-          //   ...state.subCategories.formattedCategories,
-          // ],
           ...state.subCategories,
           subCategoryFetching: false,
           name: 'SubCategories',
