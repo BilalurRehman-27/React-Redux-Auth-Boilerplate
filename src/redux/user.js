@@ -384,12 +384,10 @@ const getSubCategoriesByIdBegin = (id) => (dispatch) => {
   dispatch({
     type: ACTIONS.GET_SUBCATEGORIES_BY_ID_BEGIN,
   });
-
   dispatch({
     type: ACTIONS.SET_SELECTED_CATEGORY_ID,
     id,
   });
-
   dispatch({
     type: ACTIONS.GET_SUBCATEGORIES_BY_ID.PENDING,
     loading: true,
@@ -419,7 +417,12 @@ const getSubCategoriesByIdBegin = (id) => (dispatch) => {
       // always executed
     });
 };
-
+export const setSelectedCategory = (id) => (dispatch) => {
+  dispatch({
+    type: ACTIONS.SET_SELECTED_CATEGORY_ID,
+    id,
+  });
+};
 const logOut = () => {
   return {
     type: ACTIONS.LOG_OUT,
@@ -443,4 +446,5 @@ export const actions = {
   getTablesBegin,
   getWaitersBegin,
   getSubCategoriesByIdBegin,
+  setSelectedCategory,
 };

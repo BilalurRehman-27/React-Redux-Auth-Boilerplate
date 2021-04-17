@@ -35,14 +35,17 @@ export default function Home() {
   });
 
   const subCategoryFetching = useSelector((state) => {
-    console.log(state.user.subCategories?.subCategoryFetching);
     return state.user.subCategories?.subCategoryFetching;
   });
 
+  const subCategories = useSelector((state) => {
+    return state.user.subCategories;
+  });
+
   const selectedSubCategoriesById = useSelector((state) => {
-    console.log(state.user.subCategories?.[selectedCategoryId]);
     return state.user.subCategories?.[selectedCategoryId];
   });
+
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -65,7 +68,10 @@ export default function Home() {
   }, [mainCategoriesList, waitersList, tablesList]);
 
   const handleOnChange = (item) => {
-    dispatch(actions.getSubCategoriesByIdBegin(item.id));
+    console.log(subCategories[item.id]);
+    return !subCategories[item.id]
+      ? dispatch(actions.getSubCategoriesByIdBegin(item.id))
+      : dispatch(actions.setSelectedCategory(item.id));
   };
 
   if (isLoading) {
