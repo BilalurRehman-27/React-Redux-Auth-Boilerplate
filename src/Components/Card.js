@@ -41,7 +41,7 @@ const useStyles = makeStyles({
 const Cards = (props) => {
   const classes = useStyles();
   const { handleSelection, subCategory, isCardSelected } = props;
-  const [isSelected, setIsSelected] = useState(isCardSelected);
+  const [isSelected] = useState(isCardSelected);
 
   const rootStyle = classNames({
     [classes.root]: true,
