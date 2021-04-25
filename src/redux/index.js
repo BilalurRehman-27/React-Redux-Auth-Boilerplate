@@ -1,4 +1,4 @@
-import user from './user';
+import user from './posns.reducer';
 import counter from './counter';
 import { combineReducers } from 'redux';
 

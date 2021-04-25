@@ -1,182 +1,6 @@
 import axios from 'axios';
 import ACTIONS from './app.constants';
 const BASE_URL = 'https://www.posns.somee.com/api';
-// Reducer
-
-const initialState = {
-  profileName: null,
-  isLoggedIn: false,
-  isFetching: false,
-  jwt: null,
-  loginError: null,
-  signupError: null,
-};
-
-const currentUser = (state = initialState, action) => {
-  switch (action.type) {
-    case ACTIONS.SET_USER:
-      return {
-        ...state,
-        profileName: action.payload.username,
-        isLoggedIn: true,
-        isFetching: false,
-        jwt: action.payload.jwt,
-        loginError: null,
-      };
-    case ACTIONS.LOG_OUT: {
-      return initialState;
-    }
-    case ACTIONS.SIGN_IN:
-      return {
-        ...state,
-        isFetching: true,
-        loginError: null,
-      };
-    case ACTIONS.SIGN_UP:
-      return {
-        ...state,
-        isFetching: true,
-        signupError: null,
-      };
-    case ACTIONS.SIGN_UP_COMPLETE:
-      return {
-        ...state,
-        isFetching: false,
-        signupError: null,
-      };
-    case ACTIONS.SET_LOGIN_ERROR:
-      return {
-        ...state,
-        isFetching: false,
-        loginError: action.payload.error,
-      };
-    case ACTIONS.SET_SIGNUP_ERROR:
-      return {
-        ...state,
-        isFetching: false,
-        signupError: action.payload.error,
-      };
-
-    case ACTIONS.GET_MAIN_CATEGORIES.PENDING:
-      return {
-        ...state,
-        isFetching: true,
-      };
-    case ACTIONS.GET_MAIN_CATEGORIES.SUCCESS:
-      const formattedCategories = action.data.map((item) => {
-        return {
-          id: item.descriptionCode,
-          name: item.description,
-        };
-      });
-
-      return {
-        ...state,
-        isFetching: false,
-        mainCategories: { name: 'Main Category', data: formattedCategories },
-      };
-    case ACTIONS.GET_MAIN_CATEGORIES.ERROR:
-      return {
-        ...state,
-        isFetching: false,
-        isError: true,
-      };
-
-    case ACTIONS.GET_TABLES.PENDING:
-      return {
-        ...state,
-        isFetching: true,
-      };
-    case ACTIONS.GET_TABLES.SUCCESS:
-      const formattedTablesList = action.data.map((item) => {
-        return {
-          ...item,
-          id: item.tableCode,
-        };
-      });
-      return {
-        ...state,
-        isFetching: false,
-        tables: { name: 'Tables', data: formattedTablesList },
-      };
-    case ACTIONS.GET_TABLES.ERROR:
-      return {
-        ...state,
-        isFetching: false,
-        isError: true,
-      };
-
-    case ACTIONS.GET_WAITERS.PENDING:
-      return {
-        ...state,
-        isFetching: true,
-      };
-    case ACTIONS.GET_WAITERS.SUCCESS:
-      const formattedWaitersList = action.data.map((item) => {
-        return {
-          ...item,
-          id: item.empNo,
-        };
-      });
-      return {
-        ...state,
-        isFetching: false,
-        waiters: { name: 'Waiters', data: formattedWaitersList },
-      };
-    case ACTIONS.GET_WAITERS.ERROR:
-      return {
-        ...state,
-        isFetching: false,
-        isError: true,
-      };
-
-    case ACTIONS.GET_SUBCATEGORIES_BY_ID.PENDING:
-      return {
-        ...state,
-        subCategories: {
-          ...state.subCategories,
-          subCategoryFetching: true,
-        },
-      };
-    case ACTIONS.GET_SUBCATEGORIES_BY_ID.SUCCESS:
-      const formattedSubCategories = action.data.map((item) => {
-        return {
-          ...item,
-          id: item.itemCode,
-        };
-      });
-
-      return {
-        ...state,
-        subCategories: {
-          ...state.subCategories,
-          subCategoryFetching: false,
-          name: 'SubCategories',
-          categoryId: action.categoryId,
-          [action.categoryId]: formattedSubCategories,
-        },
-      };
-    case ACTIONS.GET_SUBCATEGORIES_BY_ID.ERROR:
-      return {
-        ...state,
-        subCategories: {
-          subCategoryFetching: false,
-        },
-        isError: true,
-      };
-
-    case ACTIONS.SET_SELECTED_CATEGORY_ID: {
-      return {
-        ...state,
-        selectedCategory: action.id,
-      };
-    }
-    default:
-      return state;
-  }
-};
-
-export default currentUser;
 
 // Action Creators
 const setUser = (userObj) => {
@@ -423,17 +247,24 @@ export const setSelectedCategory = (id) => (dispatch) => {
     id,
   });
 };
+export const setSelectedSubCategoryItems = (subCategoryItem) => (dispatch) => {
+  dispatch({
+    type: ACTIONS.SET_SELECTED_SUB_CATEGORY_ITEM,
+    subCategoryItem,
+  });
+};
+export const setItemsQuantity = (quantity = 0, rowId) => (dispatch) => {
+  dispatch({
+    type: ACTIONS.SET_ITEM_QUANTITY,
+    quantity,
+    rowId,
+  });
+};
 const logOut = () => {
   return {
     type: ACTIONS.LOG_OUT,
   };
 };
-
-// const getMainCategoriesBegin = () => {
-//   return {
-//     type: ACTIONS.GET_MAIN_CATEGORIES,
-//   };
-// };
 
 export const actions = {
   setUser,
@@ -447,4 +278,6 @@ export const actions = {
   getWaitersBegin,
   getSubCategoriesByIdBegin,
   setSelectedCategory,
+  setSelectedSubCategoryItems,
+  setItemsQuantity,
 };

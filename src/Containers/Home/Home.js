@@ -1,19 +1,26 @@
-import React, { useEffect, useState } from 'react';
+import React, { memo, useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { Box } from '@material-ui/core';
+import { Box, Grid, Paper } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import { actions } from '../../redux/user';
 import Loader from '../../Components/Loader';
-import Accordion from '../../Components/Accordion';
+import Tabs from '../../Components/Tabs';
+import Select from '../../Components/Select';
+import Table from '../../Components/Table';
 
 const useStyles = makeStyles((theme) => ({
   container: {
     padding: 10,
     backgroundColor: theme.palette.primary.light,
   },
+  paper: {
+    padding: theme.spacing(2),
+    textAlign: 'center',
+    color: theme.palette.text.secondary,
+  },
 }));
 
-export default function Home() {
+const Home = () => {
   const classes = useStyles();
   const [list, setList] = useState([]);
   const isLoading = useSelector((state) => {
@@ -46,8 +53,12 @@ export default function Home() {
     return state.user.subCategories?.[selectedCategoryId];
   });
 
-  const dispatch = useDispatch();
+  const selectedItems = useSelector((state) => {
+    return state.user.selectedItems;
+  });
 
+  const dispatch = useDispatch();
+  console.log(selectedItems);
   useEffect(() => {
     dispatch(actions.getMainCategoriesBegin());
     dispatch(actions.getTablesBegin());
@@ -67,11 +78,18 @@ export default function Home() {
     }
   }, [mainCategoriesList, waitersList, tablesList]);
 
-  const handleOnChange = (item) => {
-    console.log(subCategories[item.id]);
-    return !subCategories[item.id]
-      ? dispatch(actions.getSubCategoriesByIdBegin(item.id))
-      : dispatch(actions.setSelectedCategory(item.id));
+  const handleOnChange = (categoryId) => {
+    return !subCategories || !subCategories[categoryId]
+      ? dispatch(actions.getSubCategoriesByIdBegin(categoryId))
+      : dispatch(actions.setSelectedCategory(categoryId));
+  };
+
+  const handleSelectedSubCategoryItem = (selectedSubCategoryItem) => {
+    dispatch(actions.setSelectedSubCategoryItems(selectedSubCategoryItem));
+  };
+
+  const handleQuantityChange = (quantity, rowId) => {
+    dispatch(actions.setItemsQuantity(+quantity, rowId));
   };
 
   if (isLoading) {
@@ -79,8 +97,41 @@ export default function Home() {
   }
 
   return (
-    <Box className={classes.container}>
-      {list.map((item, index) => (
+    <aside>
+      <Grid container spacing={3}>
+        <Grid item xs={12} sm={6}>
+          {list.length && <Select data={list[1]} />}
+        </Grid>
+        <Grid item xs={12} sm={6}>
+          {list.length && <Select data={list[2]} />}
+        </Grid>
+      </Grid>
+      <Box className={classes.container}>
+        <Grid container spacing={3}>
+          <Grid item xs={6} sm={6} md={6} lg={6}>
+            <Paper className={classes.paper}>
+              {list.length && (
+                <Tabs
+                  categories={list[0]}
+                  subCategories={selectedSubCategoriesById}
+                  subCategoryFetching={subCategoryFetching}
+                  onClick={handleOnChange}
+                  handleSelectedSubCategoryItem={handleSelectedSubCategoryItem}
+                  selectedItems={selectedItems}
+                />
+              )}
+            </Paper>
+          </Grid>
+          <Grid item xs={6} sm={6} md={6} lg={6}>
+            <Paper className={classes.paper}>
+              <Table
+                selectedItems={selectedItems}
+                handleQuantityChange={handleQuantityChange}
+              />
+            </Paper>
+          </Grid>
+        </Grid>
+        {/* {list.map((item, index) => (
         <Accordion
           name={item.name}
           key={index}
@@ -89,7 +140,9 @@ export default function Home() {
           subCategories={selectedSubCategoriesById}
           subCategoryFetching={subCategoryFetching}
         />
-      ))}
-    </Box>
+      ))} */}
+      </Box>
+    </aside>
   );
-}
+};
+export default memo(Home);
