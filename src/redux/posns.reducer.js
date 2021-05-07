@@ -191,7 +191,7 @@ const currentUser = (state = initialState, action) => {
     case ACTIONS.SET_ITEM_QUANTITY: {
       const updatedList = state.selectedItems;
       updatedList.find((item) => item.id === action.rowId).quantity =
-        action.quantity;
+        action.quantity > 1 ? action.quantity : 1;
       return {
         ...state,
         selectedItems: updatedList,

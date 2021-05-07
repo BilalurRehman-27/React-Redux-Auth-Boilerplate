@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import classNames from 'classnames';
 import Card from '@material-ui/core/Card';
 import { makeStyles } from '@material-ui/core/styles';
@@ -41,11 +41,10 @@ const useStyles = makeStyles({
 const Cards = (props) => {
   const classes = useStyles();
   const { handleSelection, subCategory, isCardSelected } = props;
-  const [isSelected] = useState(isCardSelected);
 
   const rootStyle = classNames({
     [classes.root]: true,
-    [classes.selected]: isSelected,
+    [classes.selected]: isCardSelected,
   });
 
   const handleSelectedItem = (event, value) => {

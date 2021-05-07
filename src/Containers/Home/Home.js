@@ -58,7 +58,6 @@ const Home = () => {
   });
 
   const dispatch = useDispatch();
-  console.log(selectedItems);
   useEffect(() => {
     dispatch(actions.getMainCategoriesBegin());
     dispatch(actions.getTablesBegin());

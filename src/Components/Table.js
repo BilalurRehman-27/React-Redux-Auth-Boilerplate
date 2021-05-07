@@ -7,11 +7,11 @@ import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
-import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import IconButton from '@material-ui/core/IconButton';
 import Box from '@material-ui/core/Box';
 import RemoveCircleOutlineRoundedIcon from '@material-ui/icons/RemoveCircleOutlineRounded';
+import DeleteIcon from '@material-ui/icons/Delete';
 
 const useStyles = makeStyles({
   root: {
@@ -59,24 +59,32 @@ export default function DenseTable(props) {
       <Table className={classes.table} size='small' aria-label='a dense table'>
         <TableHead>
           <TableRow>
-            <TableCell width='10%'>Name</TableCell>
-            <TableCell align='left'>Quantity</TableCell>
-            <TableCell align='left' width='5%'>
+            <TableCell width='1%'></TableCell>
+            <TableCell width='5%'>Name</TableCell>
+            <TableCell width='1%' align='left'>
+              Quantity
+            </TableCell>
+            <TableCell align='left' width='1%'>
               Price
             </TableCell>
-            <TableCell align='left' width='5%'>
+            <TableCell align='left' width='1%'>
               Amount
             </TableCell>
-            <TableCell align='left' width='5%'></TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
           {selectedItems.map((row) => (
             <TableRow key={row.name} className={classes.root}>
+              <TableCell align='center'>
+                <DeleteIcon
+                  onClick={(event) => handleDelete(event, row)}
+                  style={{ color: 'red' }}
+                />
+              </TableCell>
               <TableCell component='th' scope='row'>
                 {row.name}
               </TableCell>
-              <TableCell align='left' width='10%'>
+              <TableCell align='left'>
                 <Box style={{ display: 'flex' }}>
                   <TextField
                     style={{ width: '100%' }}
@@ -100,20 +108,8 @@ export default function DenseTable(props) {
                   </IconButton>
                 </Box>
               </TableCell>
-              <TableCell align='left' width='10%'>
-                {row.tagRate}
-              </TableCell>
-              <TableCell align='left' width='10%'>
-                {row.quantity * row.tagRate}
-              </TableCell>
-              <TableCell align='left' width='10%'>
-                <Button
-                  onClick={(event) => handleDelete(event, row)}
-                  color='primary'
-                >
-                  Delete
-                </Button>
-              </TableCell>
+              <TableCell align='left'>{row.tagRate}</TableCell>
+              <TableCell align='left'>{row.quantity * row.tagRate}</TableCell>
             </TableRow>
           ))}
         </TableBody>
