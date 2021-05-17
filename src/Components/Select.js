@@ -18,10 +18,11 @@ const useStyles = makeStyles((theme) => ({
 
 const SimpleSelect = (props) => {
   const classes = useStyles();
-  const [age, setAge] = React.useState('');
-  const { data } = props;
+  const [value, setValue] = React.useState('');
+  const { data, handleSelect } = props;
   const handleChange = (event) => {
-    setAge(event.target.value);
+    setValue(event.target.value);
+    handleSelect(event.target.value);
   };
 
   return (
@@ -33,12 +34,12 @@ const SimpleSelect = (props) => {
         <Select
           labelId='demo-simple-select-outlined-label'
           id='demo-simple-select-outlined'
-          value={age}
+          value={value || ''}
           onChange={handleChange}
           label={data.name}
         >
-          <MenuItem value=''>
-            <em>None</em>
+          <MenuItem value='' disabled={true}>
+            <em>--Select--</em>
           </MenuItem>
           {data.data.map((item) => {
             return (

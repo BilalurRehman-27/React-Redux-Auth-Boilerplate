@@ -127,6 +127,30 @@ const currentUser = (state = initialState, action) => {
         isError: true,
       };
 
+    case ACTIONS.GET_SALES_PERSON.PENDING:
+      return {
+        ...state,
+        isFetching: true,
+      };
+    case ACTIONS.GET_SALES_PERSON.SUCCESS:
+      const formattedSalePersonsList = action.data.map((item) => {
+        return {
+          name: item.loginName,
+          id: item.userId,
+        };
+      });
+      return {
+        ...state,
+        isFetching: false,
+        salePersons: { name: 'SalePersons', data: formattedSalePersonsList },
+      };
+    case ACTIONS.GET_SALES_PERSON.ERROR:
+      return {
+        ...state,
+        isFetching: false,
+        isError: true,
+      };
+
     case ACTIONS.GET_SUBCATEGORIES_BY_ID.PENDING:
       return {
         ...state,
@@ -170,7 +194,8 @@ const currentUser = (state = initialState, action) => {
     }
 
     case ACTIONS.SET_SELECTED_SUB_CATEGORY_ITEM: {
-      const selectedItems = state.selectedItems.concat(action.subCategoryItem);
+      const prevSelectedItems = state.selectedItems ?? [];
+      const selectedItems = prevSelectedItems.concat(action.subCategoryItem);
       const currentItem = action.subCategoryItem;
 
       const uniqueList = [
@@ -195,6 +220,60 @@ const currentUser = (state = initialState, action) => {
       return {
         ...state,
         selectedItems: updatedList,
+      };
+    }
+    case ACTIONS.SET_REMARKS: {
+      return {
+        ...state,
+        remarks: action.remarks,
+      };
+    }
+
+    case ACTIONS.SET_SELECTED_WAITER: {
+      return {
+        ...state,
+        selectedWaiter: action.waiterId,
+      };
+    }
+
+    case ACTIONS.SET_SELECTED_TABLE: {
+      return {
+        ...state,
+        selectedTable: action.tableId,
+      };
+    }
+
+    case ACTIONS.SAVE_ORDER.PENDING: {
+      return {
+        ...state,
+        isFetching: true,
+      };
+    }
+    case ACTIONS.SAVE_ORDER.SUCCESS: {
+      return {
+        ...state,
+        selectedItems: [],
+        selectedTable: '',
+        selectedWaiter: '',
+        remarks: '',
+        isFetching: false,
+        isOrderSaved: true,
+      };
+    }
+    case ACTIONS.RESET_NOTIFICATION: {
+      return {
+        ...state,
+        isOrderSaved: false,
+      };
+    }
+
+    case ACTIONS.DELETE_SELECTED_ITEM: {
+      const filteredItems = state.selectedItems.filter(
+        (item) => item.id !== action.item.id
+      );
+      return {
+        ...state,
+        selectedItems: filteredItems,
       };
     }
     default:

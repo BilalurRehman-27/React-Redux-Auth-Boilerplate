@@ -85,7 +85,11 @@ const ScrollableTabsButtonAuto = (props) => {
                     subCategory={subCategory}
                     handleSelection={handleSubCategorySelection}
                     isCardSelected={
-                      !!selectedItems.find((item) => item.id === subCategory.id)
+                      selectedItems
+                        ? !!selectedItems.find(
+                            (item) => item.id === subCategory.id
+                          )
+                        : false
                     }
                   />
                 </Grid>

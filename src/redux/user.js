@@ -132,9 +132,6 @@ const getMainCategoriesBegin = () => (dispatch) => {
         loading: false,
         error: true,
       });
-    })
-    .then(function () {
-      // always executed
     });
 };
 
@@ -204,6 +201,36 @@ const getWaitersBegin = () => (dispatch) => {
     });
 };
 
+const getSalesPersonBegin = () => (dispatch) => {
+  dispatch({
+    type: ACTIONS.GET_SALES_PERSON_BEGIN,
+  });
+  dispatch({
+    type: ACTIONS.GET_SALES_PERSON.PENDING,
+    loading: true,
+  });
+  axios({
+    method: 'get',
+    url: `${BASE_URL}/SalePerson`,
+  })
+    .then(function (response) {
+      dispatch({
+        type: ACTIONS.GET_SALES_PERSON.SUCCESS,
+        loading: false,
+        data: response.data,
+      });
+    })
+    .catch(function (error) {
+      // handle error
+      console.log(error.response);
+      dispatch({
+        type: ACTIONS.GET_SALES_PERSON.ERROR,
+        loading: false,
+        error: true,
+      });
+    });
+};
+
 const getSubCategoriesByIdBegin = (id) => (dispatch) => {
   dispatch({
     type: ACTIONS.GET_SUBCATEGORIES_BY_ID_BEGIN,
@@ -253,13 +280,79 @@ export const setSelectedSubCategoryItems = (subCategoryItem) => (dispatch) => {
     subCategoryItem,
   });
 };
-export const setItemsQuantity = (quantity = 0, rowId) => (dispatch) => {
+export const saveOrderBegin = (payload) => (dispatch) => {
   dispatch({
-    type: ACTIONS.SET_ITEM_QUANTITY,
-    quantity,
-    rowId,
+    type: ACTIONS.SAVE_ORDER_BEGIN,
+  });
+  dispatch({
+    type: ACTIONS.SAVE_ORDER.PENDING,
+    loading: true,
+  });
+
+  axios
+    .post(`${BASE_URL}/Save`, payload)
+    .then(function (response) {
+      dispatch({
+        type: ACTIONS.SAVE_ORDER.SUCCESS,
+        loading: false,
+        data: response.data,
+      });
+      setTimeout(() => {
+        dispatch({
+          type: ACTIONS.RESET_NOTIFICATION,
+          isOrderSaved: false,
+        });
+      }, 3000);
+    })
+    .catch(function (error) {
+      // handle error
+      console.log(error.response);
+      dispatch({
+        type: ACTIONS.SAVE_ORDER.ERROR,
+        loading: false,
+        error: true,
+      });
+    });
+};
+
+export const setItemsQuantity =
+  (quantity = 0, rowId) =>
+  (dispatch) => {
+    dispatch({
+      type: ACTIONS.SET_ITEM_QUANTITY,
+      quantity,
+      rowId,
+    });
+  };
+
+export const setRemarks = (remarks) => (dispatch) => {
+  dispatch({
+    type: ACTIONS.SET_REMARKS,
+    remarks,
   });
 };
+
+export const setSelectedWaiter = (waiterId) => (dispatch) => {
+  dispatch({
+    type: ACTIONS.SET_SELECTED_WAITER,
+    waiterId,
+  });
+};
+
+export const setSelectedTable = (tableId) => (dispatch) => {
+  dispatch({
+    type: ACTIONS.SET_SELECTED_TABLE,
+    tableId,
+  });
+};
+
+export const deleteSelectedItem = (item) => (dispatch) => {
+  dispatch({
+    type: ACTIONS.DELETE_SELECTED_ITEM,
+    item,
+  });
+};
+
 const logOut = () => {
   return {
     type: ACTIONS.LOG_OUT,
@@ -276,8 +369,14 @@ export const actions = {
   getMainCategoriesBegin,
   getTablesBegin,
   getWaitersBegin,
+  getSalesPersonBegin,
   getSubCategoriesByIdBegin,
   setSelectedCategory,
   setSelectedSubCategoryItems,
   setItemsQuantity,
+  setRemarks,
+  setSelectedWaiter,
+  setSelectedTable,
+  saveOrderBegin,
+  deleteSelectedItem,
 };

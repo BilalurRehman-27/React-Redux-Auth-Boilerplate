@@ -34,7 +34,7 @@ export default function App() {
   );
 
   return (
-    <Container maxWidth='lg'>
+    <Container maxWidth='xl'>
       <Header isLoggedIn={isLoggedIn} />
       <Switch>
         <Route exact path='/' component={SignIn} />
