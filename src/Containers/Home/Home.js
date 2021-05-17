@@ -193,7 +193,7 @@ const Home = () => {
   if (isLoading) {
     return <Loader />;
   }
-  console.log('list', list);
+
   return (
     <aside>
       {!!isOrderSaved && (
@@ -210,12 +210,20 @@ const Home = () => {
       <Grid container spacing={3}>
         <Grid item xs={12} sm={6}>
           {list.length && (
-            <Select data={list[3]} handleSelect={handleWaiterSelect} />
+            <Select
+              data={list[3]}
+              handleSelect={handleWaiterSelect}
+              value={selectedWaiter}
+            />
           )}
         </Grid>
         <Grid item xs={12} sm={6}>
           {list.length && (
-            <Select data={list[2]} handleSelect={handleTableSelect} />
+            <Select
+              data={list[2]}
+              handleSelect={handleTableSelect}
+              value={selectedTable}
+            />
           )}
         </Grid>
         <Grid item xs={12} sm={12} lg={12}>
@@ -249,6 +257,8 @@ const Home = () => {
             <Paper className={classes.paper}>
               <Table
                 handleSave={handleSave}
+                selectedTable={selectedTable}
+                selectedWaiter={selectedWaiter}
                 selectedItems={selectedItems}
                 deleteSelectedItem={deleteSelectedItem}
                 handleQuantityChange={handleQuantityChange}

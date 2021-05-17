@@ -288,7 +288,6 @@ export const saveOrderBegin = (payload) => (dispatch) => {
     type: ACTIONS.SAVE_ORDER.PENDING,
     loading: true,
   });
-
   axios
     .post(`${BASE_URL}/Save`, payload)
     .then(function (response) {
@@ -297,6 +296,7 @@ export const saveOrderBegin = (payload) => (dispatch) => {
         loading: false,
         data: response.data,
       });
+      dispatch(actions.getTablesBegin());
       setTimeout(() => {
         dispatch({
           type: ACTIONS.RESET_NOTIFICATION,

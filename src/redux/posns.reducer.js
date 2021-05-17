@@ -253,11 +253,18 @@ const currentUser = (state = initialState, action) => {
       return {
         ...state,
         selectedItems: [],
+        subCategories: [],
         selectedTable: '',
         selectedWaiter: '',
         remarks: '',
         isFetching: false,
         isOrderSaved: true,
+      };
+    }
+    case ACTIONS.SAVE_ORDER.ERROR: {
+      return {
+        ...state,
+        isFetching: false,
       };
     }
     case ACTIONS.RESET_NOTIFICATION: {

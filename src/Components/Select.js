@@ -18,10 +18,10 @@ const useStyles = makeStyles((theme) => ({
 
 const SimpleSelect = (props) => {
   const classes = useStyles();
-  const [value, setValue] = React.useState('');
-  const { data, handleSelect } = props;
+  //const [value, setValue] = React.useState('');
+  const { data, handleSelect, value } = props;
   const handleChange = (event) => {
-    setValue(event.target.value);
+    //setValue(event.target.value);
     handleSelect(event.target.value);
   };
 
@@ -38,7 +38,7 @@ const SimpleSelect = (props) => {
           onChange={handleChange}
           label={data.name}
         >
-          <MenuItem value='' disabled={true}>
+          <MenuItem value=''>
             <em>--Select--</em>
           </MenuItem>
           {data.data.map((item) => {
