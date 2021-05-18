@@ -1,7 +1,8 @@
 import React from 'react';
 import { Link as RouterLink } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
-
+import { useDispatch, useSelector } from 'react-redux';
+import Popover from '@material-ui/core/Popover';
+import PopupState, { bindTrigger, bindPopover } from 'material-ui-popup-state';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
@@ -38,19 +39,47 @@ const useStyles = makeStyles((theme) => ({
 export default function Header({ isLoggedIn }) {
   const dispatch = useDispatch();
   const classes = useStyles();
+  const loggedInUser = useSelector((state) => {
+    return state.user.profileName;
+  });
 
   const loginStatus = () => {
     return isLoggedIn ? (
-      <Button
-        component={RouterLink}
-        to='/'
-        onClick={() => dispatch(actions.logOut())}
-        color='primary'
-        variant='outlined'
-        className={classes.link}
-      >
-        Logout
-      </Button>
+      <PopupState variant='popover' popupId='demo-popup-popover'>
+        {(popupState) => (
+          <div>
+            <Button
+              variant='contained'
+              color='primary'
+              {...bindTrigger(popupState)}
+            >
+              {loggedInUser}
+            </Button>
+            <Popover
+              {...bindPopover(popupState)}
+              anchorOrigin={{
+                vertical: 'bottom',
+                horizontal: 'center',
+              }}
+              transformOrigin={{
+                vertical: 'top',
+                horizontal: 'center',
+              }}
+            >
+              <Button
+                component={RouterLink}
+                to='/'
+                onClick={() => dispatch(actions.logOut())}
+                color='primary'
+                variant='outlined'
+                className={classes.link}
+              >
+                Logout
+              </Button>
+            </Popover>
+          </div>
+        )}
+      </PopupState>
     ) : (
       <Button
         component={RouterLink}

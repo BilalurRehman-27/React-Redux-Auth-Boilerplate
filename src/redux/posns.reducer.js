@@ -15,6 +15,7 @@ const currentUser = (state = initialState, action) => {
       return {
         ...state,
         profileName: action.payload.username,
+        loggedInUserId: action.payload.userId,
         isLoggedIn: true,
         isFetching: false,
         jwt: action.payload.jwt,
@@ -232,7 +233,7 @@ const currentUser = (state = initialState, action) => {
     case ACTIONS.SET_SELECTED_WAITER: {
       return {
         ...state,
-        selectedWaiter: action.waiterId,
+        selectedSalePerson: action.salePersonId,
       };
     }
 
@@ -255,7 +256,7 @@ const currentUser = (state = initialState, action) => {
         selectedItems: [],
         subCategories: [],
         selectedTable: '',
-        selectedWaiter: '',
+        selectedSalePerson: '',
         remarks: '',
         isFetching: false,
         isOrderSaved: true,

@@ -41,8 +41,8 @@ const signIn = (userObj) => (dispatch) => {
       if (response.data) {
         dispatch(
           setUser({
-            username: userObj.username,
-            jwt: response.data.jwt,
+            username: response.data.fullName,
+            userId: response.data.userId,
           })
         );
       } else {
@@ -332,10 +332,10 @@ export const setRemarks = (remarks) => (dispatch) => {
   });
 };
 
-export const setSelectedWaiter = (waiterId) => (dispatch) => {
+export const setSelectedSalePerson = (salePersonId) => (dispatch) => {
   dispatch({
     type: ACTIONS.SET_SELECTED_WAITER,
-    waiterId,
+    salePersonId,
   });
 };
 
@@ -375,7 +375,7 @@ export const actions = {
   setSelectedSubCategoryItems,
   setItemsQuantity,
   setRemarks,
-  setSelectedWaiter,
+  setSelectedSalePerson,
   setSelectedTable,
   saveOrderBegin,
   deleteSelectedItem,

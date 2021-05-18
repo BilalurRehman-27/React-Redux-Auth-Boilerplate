@@ -85,8 +85,8 @@ const Home = () => {
     return state.user.selectedItems;
   });
 
-  const selectedWaiter = useSelector((state) => {
-    return state.user.selectedWaiter;
+  const selectedSalePerson = useSelector((state) => {
+    return state.user.selectedSalePerson;
   });
 
   const selectedTable = useSelector((state) => {
@@ -99,6 +99,10 @@ const Home = () => {
 
   const isOrderSaved = useSelector((state) => {
     return state.user.isOrderSaved;
+  });
+
+  const loggedInUserId = useSelector((state) => {
+    return state.user.loggedInUserId;
   });
 
   const dispatch = useDispatch();
@@ -167,19 +171,20 @@ const Home = () => {
       };
     });
     const payload = {
-      EmpNo: 1,
+      Waiter: loggedInUserId,
       Remarks: remarks,
       TotalQty: totalQuantity,
       TotalNetAmount: totalAmount,
       TableCode: selectedTable,
-      Waiter: selectedWaiter,
+      EmpNo: selectedSalePerson,
       items: filteredItems,
     };
+
     dispatch(actions.saveOrderBegin(payload));
   };
 
   const handleWaiterSelect = (value) => {
-    dispatch(actions.setSelectedWaiter(value));
+    dispatch(actions.setSelectedSalePerson(value));
   };
 
   const handleTableSelect = (value) => {
@@ -213,7 +218,7 @@ const Home = () => {
             <Select
               data={list[3]}
               handleSelect={handleWaiterSelect}
-              value={selectedWaiter}
+              value={selectedSalePerson}
             />
           )}
         </Grid>
@@ -258,7 +263,7 @@ const Home = () => {
               <Table
                 handleSave={handleSave}
                 selectedTable={selectedTable}
-                selectedWaiter={selectedWaiter}
+                selectedSalePerson={selectedSalePerson}
                 selectedItems={selectedItems}
                 deleteSelectedItem={deleteSelectedItem}
                 handleQuantityChange={handleQuantityChange}

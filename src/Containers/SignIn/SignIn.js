@@ -51,9 +51,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function SignIn() {
-  const isLoggedIn = useSelector(
-    (state) => state.user.isLoggedIn && state.user.jwt !== null
-  );
+  const isLoggedIn = useSelector((state) => state.user.isLoggedIn);
   const loginError = useSelector((state) => state.user.loginError);
   const isLoginError = loginError ? true : false;
 

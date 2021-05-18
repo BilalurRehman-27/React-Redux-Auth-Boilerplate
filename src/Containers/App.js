@@ -12,26 +12,28 @@ export default function App() {
   const isLoggedIn = useSelector(
     (state) => {
       const loggedInUser = JSON.parse(localStorage.getItem('redux'));
-
       return (
-        (loggedInUser && !!loggedInUser.isLoggedIn) || state.user.isLoggedIn
+        (loggedInUser && !!loggedInUser.user.isLoggedIn) ||
+        state.user.isLoggedIn
       );
     }
     // && state.user.jwt !== null
   );
 
-  const PrivateRoute = ({ component: Component, ...rest }) => (
-    <Route
-      {...rest}
-      render={(props) =>
-        isLoggedIn === true ? (
-          <Component {...props} />
-        ) : (
-          <Redirect exact to='/' />
-        )
-      }
-    />
-  );
+  const PrivateRoute = ({ component: Component, ...rest }) => {
+    return (
+      <Route
+        {...rest}
+        render={(props) =>
+          isLoggedIn === true ? (
+            <Component {...props} />
+          ) : (
+            <Redirect exact to='/' />
+          )
+        }
+      />
+    );
+  };
 
   return (
     <Container maxWidth='xl'>

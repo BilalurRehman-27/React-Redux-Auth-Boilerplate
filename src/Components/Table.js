@@ -48,7 +48,7 @@ export default function DenseTable(props) {
     handleSave,
     selectedItems,
     selectedTable,
-    selectedWaiter,
+    selectedSalePerson,
     deleteSelectedItem,
     handleQuantityChange,
   } = props;
@@ -84,7 +84,7 @@ export default function DenseTable(props) {
     setQuantity(--value);
     handleQuantityChange(value, row.id);
   };
-  console.log('selectedWaiter', selectedWaiter, 'selectedTable', selectedTable);
+
   return (
     <TableContainer component={Paper}>
       <Table className={classes.table} size='small' aria-label='a dense table'>
@@ -212,7 +212,7 @@ export default function DenseTable(props) {
             color='primary'
             variant='contained'
             onClick={handleSaveRecord}
-            disabled={!(!!selectedWaiter && !!selectedTable)}
+            disabled={!(!!selectedSalePerson && !!selectedTable)}
           >
             Save
           </Button>
