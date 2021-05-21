@@ -279,9 +279,15 @@ const currentUser = (state = initialState, action) => {
       const filteredItems = state.selectedItems.filter(
         (item) => item.id !== action.item.id
       );
+      const subCategories = state.subCategories;
+      subCategories[+action.item.mainCat].find(
+        (item) => item.itemCode === action.item.id
+      ).quantity = 0;
+
       return {
         ...state,
         selectedItems: filteredItems,
+        subCategories: subCategories,
       };
     }
     default:

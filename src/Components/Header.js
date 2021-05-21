@@ -6,7 +6,7 @@ import PopupState, { bindTrigger, bindPopover } from 'material-ui-popup-state';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
-// import Link from '@material-ui/core/Link';
+import Link from '@material-ui/core/Link';
 import Button from '@material-ui/core/Button';
 import { makeStyles } from '@material-ui/core/styles';
 
@@ -107,16 +107,32 @@ export default function Header({ isLoggedIn }) {
           noWrap
           className={classes.toolbarTitle}
         >
-          POSNS
+          <Link component={RouterLink} to='/'>
+            NISA SULTAN
+          </Link>
         </Typography>
-        {/* <nav>
-                    <Link component={RouterLink} to="/" variant="button" color="textPrimary" href="#" className={classes.link}>
-                        Public
-                    </Link>
-                    <Link component={RouterLink} to="/Home" variant="button" color="textPrimary" href="#" className={classes.link}>
-                        Home
-                    </Link>
-                </nav> */}
+        <nav>
+          <Button
+            to='/ViewOrders'
+            component={RouterLink}
+            color='primary'
+            variant='outlined'
+            className={classes.link}
+          >
+            View Orders
+          </Button>
+
+          {/* <Link
+            component={RouterLink}
+            to='/Home'
+            variant='button'
+            color='textPrimary'
+            href='#'
+            className={classes.link}
+          >
+            Home
+          </Link> */}
+        </nav>
         {loginStatus()}
       </Toolbar>
     </AppBar>

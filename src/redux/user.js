@@ -33,7 +33,10 @@ const signIn = (userObj) => (dispatch) => {
       `${BASE_URL}/Login?userName=${userObj.username}&password=${userObj.password}`,
       {},
       {
-        headers: { 'Content-Security-Policy': 'upgrade-insecure-requests' },
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Credentials': true,
+        },
       }
     )
     .then(function (response) {

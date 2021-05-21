@@ -94,7 +94,7 @@ export default function DenseTable(props) {
             <TableCell width='1%' align='left'>
               Quantity
             </TableCell>
-            <TableCell align='left' width='1%'>
+            <TableCell align='left' width='2%'>
               Price
             </TableCell>
             <TableCell align='left' width='1%'>
@@ -186,7 +186,7 @@ export default function DenseTable(props) {
                     backgroundColor: '#17cf6a40',
                   }}
                 >
-                  GST:
+                  INC GST (16%):
                 </TableCell>
                 <TableCell
                   scope='row'
@@ -197,6 +197,33 @@ export default function DenseTable(props) {
                   }}
                 >
                   {`Rs ${Math.floor(totalAmount + totalAmount * 0.16)}`}
+                </TableCell>
+                <TableCell scope='row'></TableCell>
+              </TableRow>
+              <TableRow className={classes.customRows}>
+                <TableCell scope='row'>
+                  <Box></Box>
+                </TableCell>
+                <TableCell scope='row'></TableCell>
+                <TableCell
+                  scope='row'
+                  style={{
+                    fontSize: '15px',
+                    fontWeight: 'bold',
+                    backgroundColor: '#5f6d5a52',
+                  }}
+                >
+                  INC GST (5%):
+                </TableCell>
+                <TableCell
+                  scope='row'
+                  style={{
+                    fontSize: '15px',
+                    fontWeight: 'bold',
+                    backgroundColor: '#5f6d5a52',
+                  }}
+                >
+                  {`Rs ${Math.floor(totalAmount + totalAmount * 0.05)}`}
                 </TableCell>
                 <TableCell scope='row'></TableCell>
               </TableRow>
