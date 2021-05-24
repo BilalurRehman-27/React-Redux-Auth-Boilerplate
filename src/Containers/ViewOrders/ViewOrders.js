@@ -1,5 +1,14 @@
-import React from 'react';
-import { withStyles, makeStyles } from '@material-ui/core/styles';
+import React, { useEffect, useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { useHistory } from 'react-router-dom';
+import { v1 as uuid } from 'uuid';
+import MomentUtils from '@date-io/moment';
+import {
+  MuiPickersUtilsProvider,
+  KeyboardDatePicker,
+} from '@material-ui/pickers';
+import Grid from '@material-ui/core/Grid';
+import moment from 'moment';
 import Paper from '@material-ui/core/Paper';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -7,55 +16,21 @@ import TableCell from '@material-ui/core/TableCell';
 import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TablePagination from '@material-ui/core/TablePagination';
+import { withStyles, makeStyles } from '@material-ui/core/styles';
 import TableRow from '@material-ui/core/TableRow';
+import { actions } from '../../redux/user';
+import Loader from '../../Components/Loader';
 
 const columns = [
-  { id: 'name', label: 'Name', minWidth: 170 },
-  { id: 'code', label: 'ISO\u00a0Code', minWidth: 100 },
+  { id: 'scono', label: 'Order no', minWidth: 100 },
+  { id: 'scodate', label: 'Order Date', minWidth: 100, format: 'date' },
+  { id: 'tableName', label: 'Table Name', minWidth: 100 },
   {
-    id: 'population',
-    label: 'Population',
+    id: 'remarks',
+    label: 'Remarks',
     minWidth: 170,
-    align: 'right',
-    format: (value) => value.toLocaleString('en-US'),
+    align: 'left',
   },
-  {
-    id: 'size',
-    label: 'Size\u00a0(km\u00b2)',
-    minWidth: 170,
-    align: 'right',
-    format: (value) => value.toLocaleString('en-US'),
-  },
-  {
-    id: 'density',
-    label: 'Density',
-    minWidth: 170,
-    align: 'right',
-    format: (value) => value.toFixed(2),
-  },
-];
-
-function createData(name, code, population, size) {
-  const density = population / size;
-  return { name, code, population, size, density };
-}
-
-const rows = [
-  createData('India', 'IN', 1324171354, 3287263),
-  createData('China', 'CN', 1403500365, 9596961),
-  createData('Italy', 'IT', 60483973, 301340),
-  createData('United States', 'US', 327167434, 9833520),
-  createData('Canada', 'CA', 37602103, 9984670),
-  createData('Australia', 'AU', 25475400, 7692024),
-  createData('Germany', 'DE', 83019200, 357578),
-  createData('Ireland', 'IE', 4857000, 70273),
-  createData('Mexico', 'MX', 126577691, 1972550),
-  createData('Japan', 'JP', 126317000, 377973),
-  createData('France', 'FR', 67022000, 640679),
-  createData('United Kingdom', 'GB', 67545757, 242495),
-  createData('Russia', 'RU', 146793744, 17098246),
-  createData('Nigeria', 'NG', 200962417, 923768),
-  createData('Brazil', 'BR', 210147125, 8515767),
 ];
 
 const useStyles = makeStyles((theme) => ({
@@ -67,6 +42,9 @@ const useStyles = makeStyles((theme) => ({
   },
   container: {
     maxHeight: 440,
+  },
+  tableRow: {
+    cursor: 'pointer',
   },
 }));
 
@@ -80,10 +58,33 @@ const StyledTableCell = withStyles((theme) => ({
   },
 }))(TableCell);
 
-export default function ViewOrders() {
+const ViewOrders = () => {
   const classes = useStyles();
-  const [page, setPage] = React.useState(0);
+  const history = useHistory();
+  const [page, setPage] = useState(0);
+
+  const [selectedDate, setSelectedDate] = React.useState(
+    moment(new Date()).format('L')
+  );
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
+
+  const isLoading = useSelector((state) => {
+    return state.user.isFetching;
+  });
+
+  const loggedInUserId = useSelector((state) => {
+    return state.user.loggedInUserId;
+  });
+
+  const orders = useSelector((state) => {
+    return state.user.orders;
+  });
+
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(actions.getOrdersByLoggedInWaiter(loggedInUserId, selectedDate));
+  }, [dispatch, loggedInUserId, selectedDate]);
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -94,8 +95,39 @@ export default function ViewOrders() {
     setPage(0);
   };
 
+  const handleClick = (id) => {
+    dispatch(actions.setEditMode(true));
+    dispatch(actions.getOrderDetails(id));
+    history.push('/');
+  };
+
+  const handleDateChange = (date) => {
+    setSelectedDate(moment(date).format('L'));
+  };
+
+  if (isLoading) {
+    return <Loader />;
+  }
+
   return (
     <Paper className={classes.root}>
+      <MuiPickersUtilsProvider utils={MomentUtils}>
+        <Grid container justify='space-evenly'>
+          <KeyboardDatePicker
+            margin='normal'
+            id='date-picker-dialog'
+            label='Order Date'
+            views={['year', 'month', 'date']}
+            value={selectedDate}
+            format='MM/DD/YYYY'
+            onChange={handleDateChange}
+            KeyboardButtonProps={{
+              'aria-label': 'change date',
+            }}
+          />
+        </Grid>
+      </MuiPickersUtilsProvider>
+
       <TableContainer className={classes.container}>
         <Table stickyHeader aria-label='sticky table'>
           <TableHead>
@@ -112,31 +144,42 @@ export default function ViewOrders() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {rows
-              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-              .map((row) => {
-                return (
-                  <TableRow hover role='checkbox' tabIndex={-1} key={row.code}>
-                    {columns.map((column) => {
-                      const value = row[column.id];
-                      return (
-                        <StyledTableCell key={column.id} align={column.align}>
-                          {column.format && typeof value === 'number'
-                            ? column.format(value)
-                            : value}
-                        </StyledTableCell>
-                      );
-                    })}
-                  </TableRow>
-                );
-              })}
+            {orders &&
+              orders
+                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                .map((row) => {
+                  return (
+                    <TableRow
+                      hover
+                      role='checkbox'
+                      tabIndex={-1}
+                      key={uuid()}
+                      className={classes.tableRow}
+                    >
+                      {columns.map((column) => {
+                        const value = row[column.id];
+                        return (
+                          <StyledTableCell
+                            key={uuid()}
+                            align={column.align}
+                            onClick={() => handleClick(row.scono)}
+                          >
+                            {column.format && column.format === 'date'
+                              ? moment(value).format('L LT')
+                              : value}
+                          </StyledTableCell>
+                        );
+                      })}
+                    </TableRow>
+                  );
+                })}
           </TableBody>
         </Table>
       </TableContainer>
       <TablePagination
         rowsPerPageOptions={[10, 25, 100]}
         component='div'
-        count={rows.length}
+        count={orders ? orders.length : 0}
         rowsPerPage={rowsPerPage}
         page={page}
         onChangePage={handleChangePage}
@@ -144,4 +187,5 @@ export default function ViewOrders() {
       />
     </Paper>
   );
-}
+};
+export default ViewOrders;

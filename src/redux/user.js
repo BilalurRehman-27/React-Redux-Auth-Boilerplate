@@ -234,13 +234,74 @@ const getSalesPersonBegin = () => (dispatch) => {
     });
 };
 
-const getSubCategoriesByIdBegin = (id) => (dispatch) => {
+const getOrdersByLoggedInWaiter = (waiterId, selectedDate) => (dispatch) => {
+  dispatch({
+    type: ACTIONS.GET_ORDER_DETAILS_BEGIN,
+  });
+
+  dispatch({
+    type: ACTIONS.GET_ORDER_BY_WAITER_ID.PENDING,
+    loading: true,
+  });
+  axios({
+    method: 'get',
+    url: `${BASE_URL}/GetOrdersByWaiterId/${waiterId}?date=${selectedDate}`,
+  })
+    .then(function (response) {
+      dispatch({
+        type: ACTIONS.GET_ORDER_BY_WAITER_ID.SUCCESS,
+        loading: false,
+        data: response.data,
+      });
+    })
+    .catch(function (error) {
+      // handle error
+      console.log(error.response);
+      dispatch({
+        type: ACTIONS.GET_ORDER_BY_WAITER_ID.ERROR,
+        loading: false,
+        error: true,
+      });
+    });
+};
+
+const getOrderDetails = (orderNo) => (dispatch) => {
+  dispatch({
+    type: ACTIONS.GET_ORDER_DETAILS_BEGIN,
+  });
+  dispatch({
+    type: ACTIONS.GET_ORDER_DETAILS.PENDING,
+    loading: true,
+  });
+  axios({
+    method: 'get',
+    url: `${BASE_URL}/GetOrderDetails/${orderNo}`,
+  })
+    .then(function (response) {
+      dispatch({
+        type: ACTIONS.GET_ORDER_DETAILS.SUCCESS,
+        loading: false,
+        data: response.data,
+      });
+    })
+    .catch(function (error) {
+      // handle error
+      console.log(error.response);
+      dispatch({
+        type: ACTIONS.GET_ORDER_DETAILS.ERROR,
+        loading: false,
+        error: true,
+      });
+    });
+};
+
+const getSubCategoriesByIdBegin = (id, selectedCategoryId) => (dispatch) => {
   dispatch({
     type: ACTIONS.GET_SUBCATEGORIES_BY_ID_BEGIN,
   });
   dispatch({
     type: ACTIONS.SET_SELECTED_CATEGORY_ID,
-    id,
+    id: selectedCategoryId,
   });
   dispatch({
     type: ACTIONS.GET_SUBCATEGORIES_BY_ID.PENDING,
@@ -271,18 +332,21 @@ const getSubCategoriesByIdBegin = (id) => (dispatch) => {
       // always executed
     });
 };
+
 export const setSelectedCategory = (id) => (dispatch) => {
   dispatch({
     type: ACTIONS.SET_SELECTED_CATEGORY_ID,
     id,
   });
 };
+
 export const setSelectedSubCategoryItems = (subCategoryItem) => (dispatch) => {
   dispatch({
     type: ACTIONS.SET_SELECTED_SUB_CATEGORY_ITEM,
     subCategoryItem,
   });
 };
+
 export const saveOrderBegin = (payload) => (dispatch) => {
   dispatch({
     type: ACTIONS.SAVE_ORDER_BEGIN,
@@ -300,6 +364,7 @@ export const saveOrderBegin = (payload) => (dispatch) => {
         data: response.data,
       });
       dispatch(actions.getTablesBegin());
+      dispatch(actions.setEditMode(false));
       setTimeout(() => {
         dispatch({
           type: ACTIONS.RESET_NOTIFICATION,
@@ -312,6 +377,41 @@ export const saveOrderBegin = (payload) => (dispatch) => {
       console.log(error.response);
       dispatch({
         type: ACTIONS.SAVE_ORDER.ERROR,
+        loading: false,
+        error: true,
+      });
+    });
+};
+
+export const updateOrderBegin = (payload) => (dispatch) => {
+  dispatch({
+    type: ACTIONS.UPDATE_ORDER_BEGIN,
+  });
+  dispatch({
+    type: ACTIONS.UPDATE_ORDER.PENDING,
+    loading: true,
+  });
+  axios
+    .post(`${BASE_URL}/UpdateOrder`, payload)
+    .then(function (response) {
+      dispatch({
+        type: ACTIONS.UPDATE_ORDER.SUCCESS,
+        loading: false,
+        data: response.data,
+      });
+      dispatch(actions.setEditMode(false));
+      setTimeout(() => {
+        dispatch({
+          type: ACTIONS.RESET_NOTIFICATION,
+          isOrderSaved: false,
+        });
+      }, 3000);
+    })
+    .catch(function (error) {
+      // handle error
+      console.log(error.response);
+      dispatch({
+        type: ACTIONS.UPDATE_ORDER.ERROR,
         loading: false,
         error: true,
       });
@@ -356,6 +456,13 @@ export const deleteSelectedItem = (item) => (dispatch) => {
   });
 };
 
+export const setEditMode = (isEdit) => (dispatch) => {
+  dispatch({
+    type: ACTIONS.SET_EDIT_MODE,
+    data: isEdit,
+  });
+};
+
 const logOut = () => {
   return {
     type: ACTIONS.LOG_OUT,
@@ -382,4 +489,8 @@ export const actions = {
   setSelectedTable,
   saveOrderBegin,
   deleteSelectedItem,
+  getOrdersByLoggedInWaiter,
+  getOrderDetails,
+  setEditMode,
+  updateOrderBegin,
 };

@@ -2,7 +2,7 @@ import React, { memo, useEffect, useState } from 'react';
 import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
 import { useSelector, useDispatch } from 'react-redux';
-import { Box, Grid, Paper, TextField } from '@material-ui/core';
+import { Box, Grid, Paper, TextField, Typography } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import { actions } from '../../redux/user';
 import Loader from '../../Components/Loader';
@@ -49,6 +49,7 @@ const Home = () => {
   const isLoading = useSelector((state) => {
     return state.user.isFetching;
   });
+
   const mainCategoriesList = useSelector((state) => {
     return state.user.mainCategories;
   });
@@ -93,6 +94,10 @@ const Home = () => {
     return state.user.selectedTable;
   });
 
+  const selectedTableName = useSelector((state) => {
+    return state.user.selectedTableName;
+  });
+
   const remarks = useSelector((state) => {
     return state.user.remarks;
   });
@@ -103,6 +108,10 @@ const Home = () => {
 
   const loggedInUserId = useSelector((state) => {
     return state.user.loggedInUserId;
+  });
+
+  const isEditMode = useSelector((state) => {
+    return state.user.isEdit;
   });
 
   const dispatch = useDispatch();
@@ -135,11 +144,19 @@ const Home = () => {
 
   const handleOnChange = (categoryId) => {
     return !subCategories || !subCategories[categoryId]
-      ? dispatch(actions.getSubCategoriesByIdBegin(categoryId))
+      ? mainCategoriesList.data.forEach((category) => {
+          dispatch(
+            actions.getSubCategoriesByIdBegin(
+              category.id,
+              mainCategoriesList.data[0].id
+            )
+          );
+        })
       : dispatch(actions.setSelectedCategory(categoryId));
   };
 
   const handleSelectedSubCategoryItem = (selectedSubCategoryItem) => {
+    debugger;
     dispatch(actions.setSelectedSubCategoryItems(selectedSubCategoryItem));
   };
 
@@ -170,6 +187,8 @@ const Home = () => {
         Amount: element.quantity * element.tagRate,
       };
     });
+
+    const scoNo = selectedItems[0].scono;
     const payload = {
       Waiter: loggedInUserId,
       Remarks: remarks,
@@ -180,7 +199,9 @@ const Home = () => {
       items: filteredItems,
     };
 
-    dispatch(actions.saveOrderBegin(payload));
+    isEditMode
+      ? dispatch(actions.updateOrderBegin({ ...payload, scono: scoNo }))
+      : dispatch(actions.saveOrderBegin(payload));
   };
 
   const handleWaiterSelect = (value) => {
@@ -208,7 +229,10 @@ const Home = () => {
             autoHideDuration={3000}
             anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
           >
-            <Alert severity='success'>Order has been successfully</Alert>
+            <Alert severity='success'>
+              Your order has been {isEditMode ? 'updated' : 'saved'}{' '}
+              successfully
+            </Alert>
           </Snackbar>
         </div>
       )}
@@ -223,12 +247,21 @@ const Home = () => {
           )}
         </Grid>
         <Grid item xs={12} sm={6}>
-          {list.length && (
-            <Select
-              data={list[2]}
-              handleSelect={handleTableSelect}
-              value={selectedTable}
-            />
+          {isEditMode ? (
+            <Box
+              style={{ padding: '20px', display: 'flex', alignItems: 'center' }}
+            >
+              <Typography variant='h4'>Table</Typography> ________
+              <Typography variant='h6'>{selectedTableName}</Typography>
+            </Box>
+          ) : (
+            list.length && (
+              <Select
+                data={list[2]}
+                handleSelect={handleTableSelect}
+                value={selectedTable}
+              />
+            )
           )}
         </Grid>
         <Grid item xs={12} sm={12} lg={12}>
@@ -237,6 +270,7 @@ const Home = () => {
               id='remarks-basic'
               label='Remarks'
               variant='outlined'
+              value={remarks}
               onChange={handleRemarksChange}
             />
           </Box>
@@ -261,6 +295,7 @@ const Home = () => {
           <Grid item xs={6} sm={6} md={6} lg={6}>
             <Paper className={classes.paper}>
               <Table
+                isEditMode={isEditMode}
                 handleSave={handleSave}
                 selectedTable={selectedTable}
                 selectedSalePerson={selectedSalePerson}

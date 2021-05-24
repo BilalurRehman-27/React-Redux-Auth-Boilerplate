@@ -67,7 +67,16 @@ const ScrollableTabsButtonAuto = (props) => {
   };
 
   const handleSubCategorySelection = (selectedSubCategoryItem) => {
-    handleSelectedSubCategoryItem(selectedSubCategoryItem);
+    delete selectedSubCategoryItem.quantity;
+    const selectedSubCategoryQuantity = selectedItems.find(
+      (item) => item.id === selectedSubCategoryItem.id
+    );
+    handleSelectedSubCategoryItem({
+      ...selectedSubCategoryItem,
+      quantity: selectedSubCategoryQuantity
+        ? selectedSubCategoryQuantity.quantity
+        : 0,
+    });
   };
   const renderTabPanel = (selectedTabIndx) => {
     return (

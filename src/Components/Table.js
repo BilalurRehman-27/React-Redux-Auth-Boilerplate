@@ -45,6 +45,7 @@ export default function DenseTable(props) {
   const classes = useStyles();
   const key = useRef(null);
   const {
+    isEditMode,
     handleSave,
     selectedItems,
     selectedTable,
@@ -241,7 +242,7 @@ export default function DenseTable(props) {
             onClick={handleSaveRecord}
             disabled={!(!!selectedSalePerson && !!selectedTable)}
           >
-            Save
+            {isEditMode ? 'Update' : 'Save'}
           </Button>
         </Box>
       ) : (

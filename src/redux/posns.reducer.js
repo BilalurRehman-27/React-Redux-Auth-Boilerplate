@@ -251,10 +251,17 @@ const currentUser = (state = initialState, action) => {
       };
     }
     case ACTIONS.SAVE_ORDER.SUCCESS: {
+      const mainCategories = state.mainCategories.data;
+      const subCategories = state.subCategories;
+
+      mainCategories.forEach((category) => {
+        subCategories[category.id].forEach((item) => (item.quantity = 0));
+      });
+
       return {
         ...state,
         selectedItems: [],
-        subCategories: [],
+        subCategories: subCategories,
         selectedTable: '',
         selectedSalePerson: '',
         remarks: '',
@@ -268,6 +275,39 @@ const currentUser = (state = initialState, action) => {
         isFetching: false,
       };
     }
+
+    case ACTIONS.UPDATE_ORDER.PENDING: {
+      return {
+        ...state,
+        isFetching: true,
+      };
+    }
+    case ACTIONS.UPDATE_ORDER.SUCCESS: {
+      const mainCategories = state.mainCategories.data;
+      const subCategories = state.subCategories;
+
+      mainCategories.forEach((category) => {
+        subCategories[category.id].forEach((item) => (item.quantity = 0));
+      });
+
+      return {
+        ...state,
+        selectedItems: [],
+        subCategories: subCategories,
+        selectedTable: '',
+        selectedSalePerson: '',
+        remarks: '',
+        isFetching: false,
+        isOrderSaved: true,
+      };
+    }
+    case ACTIONS.UPDATE_ORDER.ERROR: {
+      return {
+        ...state,
+        isFetching: false,
+      };
+    }
+
     case ACTIONS.RESET_NOTIFICATION: {
       return {
         ...state,
@@ -288,6 +328,53 @@ const currentUser = (state = initialState, action) => {
         ...state,
         selectedItems: filteredItems,
         subCategories: subCategories,
+      };
+    }
+
+    case ACTIONS.GET_ORDER_BY_WAITER_ID.PENDING:
+      return {
+        ...state,
+        isFetching: true,
+      };
+    case ACTIONS.GET_ORDER_BY_WAITER_ID.SUCCESS:
+      return {
+        ...state,
+        isFetching: false,
+        orders: action.data,
+      };
+    case ACTIONS.GET_ORDER_BY_WAITER_ID.ERROR:
+      return {
+        ...state,
+        isFetching: false,
+        isError: true,
+      };
+
+    case ACTIONS.GET_ORDER_DETAILS.PENDING:
+      return {
+        ...state,
+        isFetching: true,
+      };
+    case ACTIONS.GET_ORDER_DETAILS.SUCCESS:
+      return {
+        ...state,
+        isFetching: false,
+        selectedItems: action.data,
+        remarks: action.data[0].remarks,
+        selectedSalePerson: action.data[0].selectedSalePerson,
+        selectedTable: action.data[0].tableCode,
+        selectedTableName: action.data[0].tableName,
+      };
+    case ACTIONS.GET_ORDER_DETAILS.ERROR:
+      return {
+        ...state,
+        isFetching: false,
+        isError: true,
+      };
+
+    case ACTIONS.SET_EDIT_MODE: {
+      return {
+        ...state,
+        isEdit: action.data,
       };
     }
     default:
