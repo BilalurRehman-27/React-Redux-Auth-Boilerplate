@@ -65,7 +65,7 @@ export default function DenseTable(props) {
     );
 
   const handleDelete = (event, item) => {
-    deleteSelectedItem(item);
+    !isEditMode && deleteSelectedItem(item);
   };
 
   const handleSaveRecord = () => {
@@ -83,8 +83,8 @@ export default function DenseTable(props) {
   };
 
   const handleDecrement = (value, row) => {
-    setQuantity(--value);
-    handleQuantityChange(value, row.id);
+    !isEditMode && setQuantity(--value);
+    !isEditMode && handleQuantityChange(value, row.id);
   };
 
   return (
@@ -130,7 +130,7 @@ export default function DenseTable(props) {
                   />
                   <IconButton
                     onClick={() => handleDecrement(row.quantity, row)}
-                    style={{ color: 'red' }}
+                    style={{ color: isEditMode ? 'disabled' : 'red' }}
                   >
                     <RemoveCircleOutlineRoundedIcon />
                   </IconButton>
@@ -141,7 +141,7 @@ export default function DenseTable(props) {
               <TableCell align='center'>
                 <DeleteIcon
                   onClick={(event) => handleDelete(event, row)}
-                  style={{ color: 'red' }}
+                  style={{ color: isEditMode ? 'disabled' : 'red' }}
                 />
               </TableCell>
             </TableRow>
