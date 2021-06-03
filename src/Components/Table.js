@@ -138,6 +138,7 @@ export default function DenseTable(props) {
                     size='small'
                     color='primary'
                     ref={key}
+                    disabled={isEditMode}
                     InputLabelProps={{
                       shrink: true,
                     }}
