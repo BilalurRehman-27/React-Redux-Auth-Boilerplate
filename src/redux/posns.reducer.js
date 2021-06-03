@@ -377,6 +377,26 @@ const currentUser = (state = initialState, action) => {
         isEdit: action.data,
       };
     }
+
+    case ACTIONS.RESET_STATE: {
+      const mainCategories = state.mainCategories.data;
+      const subCategories = state.subCategories;
+
+      mainCategories.forEach((category) => {
+        subCategories[category.id].forEach((item) => (item.quantity = 0));
+      });
+      return {
+        ...state,
+        selectedItems: [],
+        subCategories: subCategories,
+        selectedTable: '',
+        selectedSalePerson: '',
+        remarks: '',
+        isFetching: false,
+        isOrderSaved: false,
+        isEdit: false,
+      };
+    }
     default:
       return state;
   }

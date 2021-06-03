@@ -428,6 +428,12 @@ export const setItemsQuantity =
     });
   };
 
+export const resetState = () => (dispatch) => {
+  dispatch({
+    type: ACTIONS.RESET_STATE,
+  });
+};
+
 export const setRemarks = (remarks) => (dispatch) => {
   dispatch({
     type: ACTIONS.SET_REMARKS,
@@ -493,4 +499,5 @@ export const actions = {
   getOrderDetails,
   setEditMode,
   updateOrderBegin,
+  resetState,
 };

@@ -47,6 +47,7 @@ export default function DenseTable(props) {
   const {
     isEditMode,
     handleSave,
+    handleCancel,
     selectedItems,
     selectedTable,
     selectedSalePerson,
@@ -235,16 +236,28 @@ export default function DenseTable(props) {
         </TableBody>
       </Table>
       {selectedItems.length ? (
-        <Box className={classes.button}>
-          <Button
-            color='primary'
-            variant='contained'
-            onClick={handleSaveRecord}
-            disabled={!(!!selectedSalePerson && !!selectedTable)}
-          >
-            {isEditMode ? 'Update' : 'Save'}
-          </Button>
-        </Box>
+        <>
+          <Box className={classes.button}>
+            <Button
+              style={{ marginRight: '10px' }}
+              color='primary'
+              variant='contained'
+              onClick={handleSaveRecord}
+              disabled={!(!!selectedSalePerson && !!selectedTable)}
+            >
+              {isEditMode ? 'Update' : 'Save'}
+            </Button>
+            <Box>
+              <Button
+                color='default'
+                variant='contained'
+                onClick={handleCancel}
+              >
+                {'Cancel'}
+              </Button>
+            </Box>
+          </Box>
+        </>
       ) : (
         <></>
       )}

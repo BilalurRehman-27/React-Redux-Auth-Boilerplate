@@ -156,7 +156,6 @@ const Home = () => {
   };
 
   const handleSelectedSubCategoryItem = (selectedSubCategoryItem) => {
-    debugger;
     dispatch(actions.setSelectedSubCategoryItems(selectedSubCategoryItem));
   };
 
@@ -214,6 +213,10 @@ const Home = () => {
 
   const deleteSelectedItem = (item) => {
     dispatch(actions.deleteSelectedItem(item));
+  };
+
+  const handleCancel = () => {
+    dispatch(actions.resetState());
   };
 
   if (isLoading) {
@@ -297,10 +300,11 @@ const Home = () => {
               <Table
                 isEditMode={isEditMode}
                 handleSave={handleSave}
+                handleCancel={handleCancel}
                 selectedTable={selectedTable}
-                selectedSalePerson={selectedSalePerson}
                 selectedItems={selectedItems}
                 deleteSelectedItem={deleteSelectedItem}
+                selectedSalePerson={selectedSalePerson}
                 handleQuantityChange={handleQuantityChange}
               />
             </Paper>
