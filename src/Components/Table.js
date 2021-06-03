@@ -92,14 +92,31 @@ export default function DenseTable(props) {
       <Table className={classes.table} size='small' aria-label='a dense table'>
         <TableHead>
           <TableRow>
-            <TableCell width='5%'>Name</TableCell>
-            <TableCell width='1%' align='left'>
+            <TableCell
+              width='5%'
+              style={{ fontWeight: 'bold', fontSize: '14px' }}
+            >
+              Name
+            </TableCell>
+            <TableCell
+              width='1%'
+              align='left'
+              style={{ fontWeight: 'bold', fontSize: '14px' }}
+            >
               Quantity
             </TableCell>
-            <TableCell align='left' width='2%'>
+            <TableCell
+              align='left'
+              width='2%'
+              style={{ fontWeight: 'bold', fontSize: '14px' }}
+            >
               Price
             </TableCell>
-            <TableCell align='left' width='1%'>
+            <TableCell
+              align='left'
+              width='1%'
+              style={{ fontWeight: 'bold', fontSize: '13px' }}
+            >
               Amount
             </TableCell>
             <TableCell width='1%'></TableCell>

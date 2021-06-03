@@ -111,7 +111,7 @@ const ScrollableTabsButtonAuto = (props) => {
 
   return (
     <div className={classes.root}>
-      <AppBar position='static' color='default'>
+      <AppBar position='static' color='red'>
         <Tabs
           value={value}
           onChange={handleChange}
@@ -125,6 +125,11 @@ const ScrollableTabsButtonAuto = (props) => {
             return (
               <Tab
                 key={category.id}
+                style={{
+                  fontWeight: 'bold',
+                  backgroundColor: '#8b939a',
+                  color: 'white',
+                }}
                 label={category.name}
                 {...a11yProps(category.id)}
               />
