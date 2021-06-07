@@ -123,47 +123,52 @@ export default function DenseTable(props) {
           </TableRow>
         </TableHead>
         <TableBody>
-          {selectedItems.map((row) => (
-            <TableRow key={row.name} className={classes.root}>
-              <TableCell component='th' scope='row'>
-                {row.name}
-              </TableCell>
-              <TableCell align='left'>
-                <Box style={{ display: 'flex' }}>
-                  <TextField
-                    style={{ width: '100%' }}
-                    id='outlined-basic'
-                    variant='outlined'
-                    value={row.quantity}
-                    size='small'
-                    color='primary'
-                    ref={key}
-                    disabled={isEditMode}
-                    InputLabelProps={{
-                      shrink: true,
-                    }}
-                    onChange={(e) => {
-                      handleChange(e.target.value, row);
-                    }}
-                  />
-                  <IconButton
-                    onClick={() => handleDecrement(row.quantity, row)}
-                    style={{ color: isEditMode ? 'disabled' : 'red' }}
-                  >
-                    <RemoveCircleOutlineRoundedIcon />
-                  </IconButton>
-                </Box>
-              </TableCell>
-              <TableCell align='left'>{row.tagRate}</TableCell>
-              <TableCell align='left'>{row.quantity * row.tagRate}</TableCell>
-              <TableCell align='center'>
-                <DeleteIcon
-                  onClick={(event) => handleDelete(event, row)}
-                  style={{ color: isEditMode ? 'disabled' : 'red' }}
-                />
-              </TableCell>
-            </TableRow>
-          ))}
+          {selectedItems.length &&
+            selectedItems
+              .sort((a, b) => a.pk - b.pk)
+              .map((row) => (
+                <TableRow key={row.name} className={classes.root}>
+                  <TableCell component='th' scope='row'>
+                    {row.name}
+                  </TableCell>
+                  <TableCell align='left'>
+                    <Box style={{ display: 'flex' }}>
+                      <TextField
+                        style={{ width: '100%' }}
+                        id='outlined-basic'
+                        variant='outlined'
+                        value={row.quantity}
+                        size='small'
+                        color='primary'
+                        ref={key}
+                        disabled={isEditMode}
+                        InputLabelProps={{
+                          shrink: true,
+                        }}
+                        onChange={(e) => {
+                          handleChange(e.target.value, row);
+                        }}
+                      />
+                      <IconButton
+                        onClick={() => handleDecrement(row.quantity, row)}
+                        style={{ color: isEditMode ? 'disabled' : 'red' }}
+                      >
+                        <RemoveCircleOutlineRoundedIcon />
+                      </IconButton>
+                    </Box>
+                  </TableCell>
+                  <TableCell align='left'>{row.tagRate}</TableCell>
+                  <TableCell align='left'>
+                    {row.quantity * row.tagRate}
+                  </TableCell>
+                  <TableCell align='center'>
+                    <DeleteIcon
+                      onClick={(event) => handleDelete(event, row)}
+                      style={{ color: isEditMode ? 'disabled' : 'red' }}
+                    />
+                  </TableCell>
+                </TableRow>
+              ))}
           {selectedItems.length ? (
             <>
               <TableRow className={classes.customRows}>
