@@ -1,4 +1,5 @@
 import React, { useRef, useState, useEffect } from 'react';
+import { useReactToPrint } from 'react-to-print';
 import { makeStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -13,6 +14,7 @@ import IconButton from '@material-ui/core/IconButton';
 import DeleteIcon from '@material-ui/icons/Delete';
 import Button from '@material-ui/core/Button';
 import RemoveCircleOutlineRoundedIcon from '@material-ui/icons/RemoveCircleOutlineRounded';
+import PrintOrder from '../Containers/PrintOrder/PrintOrder';
 
 const useStyles = makeStyles({
   root: {
@@ -43,7 +45,7 @@ const useStyles = makeStyles({
 
 export default function DenseTable(props) {
   const classes = useStyles();
-  const key = useRef(null);
+  const componentRef = useRef();
   const {
     isEditMode,
     handleSave,
@@ -68,8 +70,13 @@ export default function DenseTable(props) {
     !isEditMode && deleteSelectedItem(item);
   };
 
-  const handleSaveRecord = () => {
+  const handlePrint = useReactToPrint({
+    content: () => componentRef.current,
+  });
+  const handleSaveRecord = (event) => {
+    //event.stopPropagation();
     handleSave();
+    handlePrint();
   };
 
   useEffect(() => {}, [quantity]);
@@ -139,7 +146,6 @@ export default function DenseTable(props) {
                       value={row.quantity}
                       size='small'
                       color='primary'
-                      ref={key}
                       disabled={isEditMode}
                       InputLabelProps={{
                         shrink: true,
@@ -267,6 +273,7 @@ export default function DenseTable(props) {
             >
               {isEditMode ? 'Update' : 'Save'}
             </Button>
+
             <Box>
               <Button
                 color='default'
@@ -281,6 +288,13 @@ export default function DenseTable(props) {
       ) : (
         <></>
       )}
+      <div style={{ display: 'none' }}>
+        <PrintOrder
+          ref={componentRef}
+          selectedItems={selectedItems}
+          isEditMode={isEditMode}
+        />
+      </div>
     </TableContainer>
   );
 }
