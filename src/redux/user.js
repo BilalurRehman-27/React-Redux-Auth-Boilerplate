@@ -1,7 +1,8 @@
 import axios from 'axios';
 import ACTIONS from './app.constants';
-const BASE_URL = 'https://192.168.10.2:443/api';
-// const BASE_URL = 'https://www.posns.somee.com/api';
+// const BASE_URL = 'https://192.168.10.2:443/api';
+const BASE_URL = 'http://192.168.10.2:8080/api';
+//const BASE_URL = 'https://www.posns.somee.com/api';
 
 // Action Creators
 const setUser = (userObj) => {

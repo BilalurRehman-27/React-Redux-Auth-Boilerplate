@@ -9,7 +9,6 @@ export default class PrintOrder extends Component {
     };
   }
   render() {
-    console.log(this.props.selectedItems);
     return (
       <div>
         <div
