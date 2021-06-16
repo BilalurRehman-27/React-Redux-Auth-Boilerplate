@@ -18,7 +18,7 @@ export default class PrintOrder extends Component {
             justifyContent: 'center',
           }}
         >
-          <b>NISA SULTAN</b>
+          <b>NISA SULTAN (.KOT)</b>
         </div>
         <hr />
         <div
@@ -30,6 +30,27 @@ export default class PrintOrder extends Component {
         >
           {this.props.isEditMode ? 'Updated Order' : 'New Order'}&nbsp; -&nbsp;
           {moment().format('L')}&nbsp;:&nbsp;{moment().format('LT')}
+        </div>
+        <hr />
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
+          Order No: {this.props.selectedItems[0].scono}&nbsp; -&nbsp; Table Name
+          &nbsp;:&nbsp;{this.props.selectedItems[0].tableName}
+        </div>
+        <hr />
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
+          Waiter Name: {this.props.loggedInUserName}
         </div>
         <hr />
         <div
@@ -53,7 +74,7 @@ export default class PrintOrder extends Component {
                   <tr key={item.pk}>
                     <td style={{ textAlign: 'right' }}>{item.name}</td>
                     <td></td>
-                    <td>{item.quantity}</td>
+                    <td style={{ textAlign: 'center' }}>{item.quantity}</td>
                   </tr>
                 );
               })}

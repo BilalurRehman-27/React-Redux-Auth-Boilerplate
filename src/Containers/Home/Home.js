@@ -50,6 +50,10 @@ const Home = () => {
     return state.user.isFetching;
   });
 
+  const loggedInUserName = useSelector((state) => {
+    return state.user.profileName;
+  });
+
   const mainCategoriesList = useSelector((state) => {
     return state.user.mainCategories;
   });
@@ -303,6 +307,7 @@ const Home = () => {
                 handleCancel={handleCancel}
                 selectedTable={selectedTable}
                 selectedItems={selectedItems}
+                loggedInUserName={loggedInUserName}
                 deleteSelectedItem={deleteSelectedItem}
                 selectedSalePerson={selectedSalePerson}
                 handleQuantityChange={handleQuantityChange}

@@ -52,6 +52,7 @@ export default function DenseTable(props) {
     handleCancel,
     selectedItems,
     selectedTable,
+    loggedInUserName,
     selectedSalePerson,
     deleteSelectedItem,
     handleQuantityChange,
@@ -291,8 +292,9 @@ export default function DenseTable(props) {
       <div style={{ display: 'none' }}>
         <PrintOrder
           ref={componentRef}
-          selectedItems={selectedItems}
           isEditMode={isEditMode}
+          selectedItems={selectedItems}
+          loggedInUserName={loggedInUserName}
         />
       </div>
     </TableContainer>
