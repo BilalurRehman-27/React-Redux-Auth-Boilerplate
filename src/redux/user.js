@@ -1,8 +1,14 @@
 import axios from 'axios';
 import ACTIONS from './app.constants';
+
+//For Nisa Sultan Gulber
 // const BASE_URL = 'https://192.168.10.2:8443/api';
+
+//For Nisa Sultan Johar Town
+const BASE_URL = 'https://192.168.18.2:8443/api';
+
 // const BASE_URL = 'http://192.168.10.2:8080/api';
-const BASE_URL = 'https://www.posns.somee.com/api';
+//const BASE_URL = 'https://www.posns.somee.com/api';
 
 // Action Creators
 const setUser = (userObj) => {
