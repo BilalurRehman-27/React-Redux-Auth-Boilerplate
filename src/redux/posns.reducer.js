@@ -253,6 +253,7 @@ const currentUser = (state = initialState, action) => {
     case ACTIONS.SAVE_ORDER.SUCCESS: {
       const mainCategories = state.mainCategories.data;
       const subCategories = state.subCategories;
+      const orderNo = action.data;
 
       mainCategories.forEach((category) => {
         subCategories[category.id].forEach((item) => (item.quantity = 0));
@@ -260,19 +261,25 @@ const currentUser = (state = initialState, action) => {
 
       return {
         ...state,
-        selectedItems: [],
         subCategories: subCategories,
-        selectedTable: '',
         selectedSalePerson: '',
         remarks: '',
         isFetching: false,
         isOrderSaved: true,
+        orderNo: orderNo,
       };
     }
     case ACTIONS.SAVE_ORDER.ERROR: {
       return {
         ...state,
         isFetching: false,
+      };
+    }
+
+    case ACTIONS.RESET_ORDER_NO: {
+      return {
+        ...state,
+        orderNo: 0,
       };
     }
 
@@ -312,6 +319,8 @@ const currentUser = (state = initialState, action) => {
       return {
         ...state,
         isOrderSaved: false,
+        selectedTable: '',
+        selectedItems: [],
       };
     }
 

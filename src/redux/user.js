@@ -365,13 +365,17 @@ export const saveOrderBegin = (payload) => (dispatch) => {
         loading: false,
         data: response.data,
       });
-      dispatch(actions.getTablesBegin());
+
       dispatch(actions.setEditMode(false));
       setTimeout(() => {
         dispatch({
           type: ACTIONS.RESET_NOTIFICATION,
           isOrderSaved: false,
         });
+        dispatch({
+          type: ACTIONS.RESET_ORDER_NO,
+        });
+        dispatch(actions.getTablesBegin());
       }, 3000);
     })
     .catch(function (error) {

@@ -1,4 +1,5 @@
 import React, { useRef, useState, useEffect } from 'react';
+import { useSelector } from 'react-redux';
 import { useReactToPrint } from 'react-to-print';
 import { makeStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
@@ -47,6 +48,7 @@ export default function DenseTable(props) {
   const classes = useStyles();
   const componentRef = useRef();
   const {
+    tablesList,
     isEditMode,
     handleSave,
     handleCancel,
@@ -58,6 +60,20 @@ export default function DenseTable(props) {
     handleQuantityChange,
   } = props;
   const [quantity, setQuantity] = useState(0);
+
+  const orderNo = useSelector((state) => {
+    return state.user.orderNo;
+  });
+  const handlePrint = useReactToPrint({
+    content: () => componentRef.current,
+  });
+
+  useEffect(() => {
+    if (!!orderNo && selectedItems && selectedItems.length) {
+      handlePrint();
+    }
+  }, [orderNo, handlePrint, selectedItems, isEditMode]);
+
   const totalAmount =
     selectedItems &&
     selectedItems.length &&
@@ -71,13 +87,10 @@ export default function DenseTable(props) {
     !isEditMode && deleteSelectedItem(item);
   };
 
-  const handlePrint = useReactToPrint({
-    content: () => componentRef.current,
-  });
   const handleSaveRecord = (event) => {
     //event.stopPropagation();
     handleSave();
-    handlePrint();
+    !!isEditMode && handlePrint();
   };
 
   useEffect(() => {}, [quantity]);
@@ -131,49 +144,55 @@ export default function DenseTable(props) {
           </TableRow>
         </TableHead>
         <TableBody>
-          {selectedItems
-            .sort((a, b) => a.pk - b.pk)
-            .map((row) => (
-              <TableRow key={row.name} className={classes.root}>
-                <TableCell component='th' scope='row'>
-                  {row.name}
-                </TableCell>
-                <TableCell align='left'>
-                  <Box style={{ display: 'flex' }}>
-                    <TextField
-                      style={{ width: '100%' }}
-                      id='outlined-basic'
-                      variant='outlined'
-                      value={row.quantity}
-                      size='small'
-                      color='primary'
-                      disabled={isEditMode}
-                      InputLabelProps={{
-                        shrink: true,
-                      }}
-                      onChange={(e) => {
-                        handleChange(e.target.value, row);
-                      }}
-                    />
-                    <IconButton
-                      onClick={() => handleDecrement(row.quantity, row)}
+          {selectedItems && selectedItems.length ? (
+            selectedItems
+              .sort((a, b) => a.pk - b.pk)
+              .map((row) => (
+                <TableRow key={row.name} className={classes.root}>
+                  <TableCell component='th' scope='row'>
+                    {row.name}
+                  </TableCell>
+                  <TableCell align='left'>
+                    <Box style={{ display: 'flex' }}>
+                      <TextField
+                        style={{ width: '100%' }}
+                        id='outlined-basic'
+                        variant='outlined'
+                        value={row.quantity}
+                        size='small'
+                        color='primary'
+                        disabled={isEditMode}
+                        InputLabelProps={{
+                          shrink: true,
+                        }}
+                        onChange={(e) => {
+                          handleChange(e.target.value, row);
+                        }}
+                      />
+                      <IconButton
+                        onClick={() => handleDecrement(row.quantity, row)}
+                        style={{ color: isEditMode ? 'disabled' : 'red' }}
+                      >
+                        <RemoveCircleOutlineRoundedIcon />
+                      </IconButton>
+                    </Box>
+                  </TableCell>
+                  <TableCell align='left'>{row.tagRate}</TableCell>
+                  <TableCell align='left'>
+                    {row.quantity * row.tagRate}
+                  </TableCell>
+                  <TableCell align='center'>
+                    <DeleteIcon
+                      onClick={(event) => handleDelete(event, row)}
                       style={{ color: isEditMode ? 'disabled' : 'red' }}
-                    >
-                      <RemoveCircleOutlineRoundedIcon />
-                    </IconButton>
-                  </Box>
-                </TableCell>
-                <TableCell align='left'>{row.tagRate}</TableCell>
-                <TableCell align='left'>{row.quantity * row.tagRate}</TableCell>
-                <TableCell align='center'>
-                  <DeleteIcon
-                    onClick={(event) => handleDelete(event, row)}
-                    style={{ color: isEditMode ? 'disabled' : 'red' }}
-                  />
-                </TableCell>
-              </TableRow>
-            ))}
-          {selectedItems.length ? (
+                    />
+                  </TableCell>
+                </TableRow>
+              ))
+          ) : (
+            <></>
+          )}
+          {selectedItems && selectedItems.length ? (
             <>
               <TableRow className={classes.customRows}>
                 <TableCell scope='row'>
@@ -262,7 +281,7 @@ export default function DenseTable(props) {
           )}
         </TableBody>
       </Table>
-      {selectedItems.length ? (
+      {selectedItems && selectedItems.length ? (
         <>
           <Box className={classes.button}>
             <Button
@@ -291,8 +310,11 @@ export default function DenseTable(props) {
       )}
       <div style={{ display: 'none' }}>
         <PrintOrder
+          orderNo={orderNo}
           ref={componentRef}
+          tablesList={tablesList}
           isEditMode={isEditMode}
+          selectedTable={selectedTable}
           selectedItems={selectedItems}
           loggedInUserName={loggedInUserName}
         />

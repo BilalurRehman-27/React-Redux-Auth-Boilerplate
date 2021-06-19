@@ -9,6 +9,13 @@ export default class PrintOrder extends Component {
     };
   }
   render() {
+    const { selectedItems, orderNo, isEditMode, tablesList, selectedTable } =
+      this.props;
+    const selectedTableDetails =
+      tablesList &&
+      tablesList.data.find((item) => {
+        return item.tableCode === selectedTable;
+      });
     return (
       <div>
         <div
@@ -28,7 +35,7 @@ export default class PrintOrder extends Component {
             justifyContent: 'center',
           }}
         >
-          {this.props.isEditMode ? 'Updated Order' : 'New Order'}&nbsp; -&nbsp;
+          {isEditMode ? 'Updated Order' : 'New Order'}&nbsp; -&nbsp;
           {moment().format('L')}&nbsp;:&nbsp;{moment().format('LT')}
         </div>
         <hr />
@@ -39,8 +46,18 @@ export default class PrintOrder extends Component {
             justifyContent: 'center',
           }}
         >
-          Order No: {this.props.selectedItems &&this.props.selectedItems.length && this.props.selectedItems[0].scono}
-          &nbsp;:&nbsp;{this.props.selectedItems&&this.props.selectedItems.length &&this.props.selectedItems[0].tableName}
+          Order No:{' '}
+          {isEditMode
+            ? selectedItems && selectedItems.length && selectedItems[0].scono
+            : orderNo}
+          &nbsp;:&nbsp;
+          {isEditMode
+            ? selectedItems &&
+              selectedItems.length &&
+              selectedItems[0].tableName
+            : selectedTableDetails
+            ? selectedTableDetails.name
+            : ''}
         </div>
         <hr />
         <div
@@ -69,15 +86,16 @@ export default class PrintOrder extends Component {
               </tr>
             </thead>
             <tbody>
-              {this.props.selectedItems.map((item) => {
-                return (
-                  <tr key={item.pk}>
-                    <td style={{ textAlign: 'right' }}>{item.name}</td>
-                    <td></td>
-                    <td style={{ textAlign: 'center' }}>{item.quantity}</td>
-                  </tr>
-                );
-              })}
+              {selectedItems &&
+                selectedItems.map((item) => {
+                  return (
+                    <tr key={item.pk}>
+                      <td style={{ textAlign: 'right' }}>{item.name}</td>
+                      <td></td>
+                      <td style={{ textAlign: 'center' }}>{item.quantity}</td>
+                    </tr>
+                  );
+                })}
             </tbody>
           </table>
         </div>
