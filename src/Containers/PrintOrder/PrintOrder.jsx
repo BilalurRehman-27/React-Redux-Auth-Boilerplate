@@ -18,7 +18,7 @@ export default class PrintOrder extends Component {
             justifyContent: 'center',
           }}
         >
-          <b>NISA SULTAN (.KOT)</b>
+          <b>NISA SULTAN (KOT)</b>
         </div>
         <hr />
         <div
@@ -39,8 +39,8 @@ export default class PrintOrder extends Component {
             justifyContent: 'center',
           }}
         >
-          Order No: {this.props.selectedItems[0].scono}&nbsp; -&nbsp; Table Name
-          &nbsp;:&nbsp;{this.props.selectedItems[0].tableName}
+          Order No: {this.props.selectedItems &&this.props.selectedItems.length && this.props.selectedItems[0].scono}
+          &nbsp;:&nbsp;{this.props.selectedItems&&this.props.selectedItems.length &&this.props.selectedItems[0].tableName}
         </div>
         <hr />
         <div
