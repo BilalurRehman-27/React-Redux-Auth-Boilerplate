@@ -108,7 +108,7 @@ export default function Header({ isLoggedIn }) {
           className={classes.toolbarTitle}
         >
           <Link component={RouterLink} to='/'>
-            NISA SULTAN
+            Nisa Sultan
           </Link>
         </Typography>
         <nav>

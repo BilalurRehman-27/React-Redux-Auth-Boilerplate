@@ -302,6 +302,7 @@ const Home = () => {
           <Grid item xs={6} sm={6} md={6} lg={6}>
             <Paper className={classes.paper}>
               <Table
+                remarks={remarks}
                 tablesList={tablesList}
                 isEditMode={isEditMode}
                 handleSave={handleSave}

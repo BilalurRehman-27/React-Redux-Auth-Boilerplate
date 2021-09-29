@@ -9,7 +9,7 @@ export default class PrintOrder extends Component {
     };
   }
   render() {
-    const { selectedItems, orderNo, isEditMode, tablesList, selectedTable } =
+    const { selectedItems, orderNo, isEditMode, tablesList, selectedTable,remarks } =
       this.props;
     const selectedTableDetails =
       tablesList &&
@@ -25,7 +25,7 @@ export default class PrintOrder extends Component {
             justifyContent: 'center',
           }}
         >
-          <b>NISA SULTAN (KOT)</b>
+          <b>Nisa Sultan (KOT)</b>
         </div>
         <hr />
         <div
@@ -72,6 +72,17 @@ export default class PrintOrder extends Component {
         <hr />
         <div
           style={{
+            display: 'flex',
+            alignItems: 'left',
+            justifyContent: 'left',
+          }}
+        >
+          Remarks: {remarks}
+        </div>
+        <hr />
+        <hr />
+        <div
+          style={{
             alignItems: 'center',
             display: 'flex',
             justifyContent: 'center',
@@ -80,7 +91,7 @@ export default class PrintOrder extends Component {
           <table>
             <thead>
               <tr>
-                <th style={{ textAlign: 'right' }}>Item Name </th>
+                <th style={{ textAlign: 'left' }}>Item Name </th>
                 <th></th>
                 <th style={{ textAlign: 'left' }}>Quantity</th>
               </tr>
@@ -90,7 +101,7 @@ export default class PrintOrder extends Component {
                 selectedItems.map((item) => {
                   return (
                     <tr key={item.pk}>
-                      <td style={{ textAlign: 'right' }}>{item.name}</td>
+                      <td style={{ textAlign: 'left' }}>{item.name}</td>
                       <td></td>
                       <td style={{ textAlign: 'center' }}>{item.quantity}</td>
                     </tr>

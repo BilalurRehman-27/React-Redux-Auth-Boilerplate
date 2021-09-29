@@ -48,6 +48,7 @@ export default function DenseTable(props) {
   const classes = useStyles();
   const componentRef = useRef();
   const {
+    remarks,
     tablesList,
     isEditMode,
     handleSave,
@@ -317,6 +318,7 @@ export default function DenseTable(props) {
           selectedTable={selectedTable}
           selectedItems={selectedItems}
           loggedInUserName={loggedInUserName}
+          remarks ={remarks}
         />
       </div>
     </TableContainer>
