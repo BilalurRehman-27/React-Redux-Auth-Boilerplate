@@ -1,42 +1,42 @@
-import React, { useEffect, useState } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { useHistory } from 'react-router-dom';
-import { v1 as uuid } from 'uuid';
-import MomentUtils from '@date-io/moment';
+import React, { useEffect, useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { useHistory } from "react-router-dom";
+import { v1 as uuid } from "uuid";
+import MomentUtils from "@date-io/moment";
 import {
   MuiPickersUtilsProvider,
   KeyboardDatePicker,
-} from '@material-ui/pickers';
-import Grid from '@material-ui/core/Grid';
-import moment from 'moment';
-import Paper from '@material-ui/core/Paper';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableContainer from '@material-ui/core/TableContainer';
-import TableHead from '@material-ui/core/TableHead';
-import TablePagination from '@material-ui/core/TablePagination';
-import { withStyles, makeStyles } from '@material-ui/core/styles';
-import TableRow from '@material-ui/core/TableRow';
-import { actions } from '../../redux/user';
-import Loader from '../../Components/Loader';
+} from "@material-ui/pickers";
+import Grid from "@material-ui/core/Grid";
+import moment from "moment";
+import Paper from "@material-ui/core/Paper";
+import Table from "@material-ui/core/Table";
+import TableBody from "@material-ui/core/TableBody";
+import TableCell from "@material-ui/core/TableCell";
+import TableContainer from "@material-ui/core/TableContainer";
+import TableHead from "@material-ui/core/TableHead";
+import TablePagination from "@material-ui/core/TablePagination";
+import { withStyles, makeStyles } from "@material-ui/core/styles";
+import TableRow from "@material-ui/core/TableRow";
+import { actions } from "../../redux/user";
+import Loader from "../../Components/Loader";
 
 const columns = [
-  { id: 'scono', label: 'Order no', minWidth: 100 },
-  { id: 'scodate', label: 'Order Date', minWidth: 100, format: 'date' },
-  { id: 'tableName', label: 'Table Name', minWidth: 100 },
+  { id: "scono", label: "Order no", minWidth: 100 },
+  { id: "scodate", label: "Order Date", minWidth: 100, format: "date" },
+  { id: "tableName", label: "Table Name", minWidth: 100 },
   {
-    id: 'remarks',
-    label: 'Remarks',
+    id: "remarks",
+    label: "Remarks",
     minWidth: 170,
-    align: 'left',
+    align: "left",
   },
 ];
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    width: '100%',
-    '&:nth-of-type(odd)': {
+    width: "100%",
+    "&:nth-of-type(odd)": {
       backgroundColor: theme.palette.action.hover,
     },
   },
@@ -44,7 +44,7 @@ const useStyles = makeStyles((theme) => ({
     maxHeight: 440,
   },
   tableRow: {
-    cursor: 'pointer',
+    cursor: "pointer",
   },
 }));
 
@@ -64,7 +64,7 @@ const ViewOrders = () => {
   const [page, setPage] = useState(0);
 
   const [selectedDate, setSelectedDate] = React.useState(
-    moment(new Date()).format('L')
+    moment(new Date()).format("L")
   );
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
 
@@ -98,11 +98,11 @@ const ViewOrders = () => {
   const handleClick = (id) => {
     dispatch(actions.setEditMode(true));
     dispatch(actions.getOrderDetails(id));
-    history.push('/');
+    history.push("/");
   };
 
   const handleDateChange = (date) => {
-    setSelectedDate(moment(date).format('L'));
+    setSelectedDate(moment(date).format("L"));
   };
 
   if (isLoading) {
@@ -112,24 +112,24 @@ const ViewOrders = () => {
   return (
     <Paper className={classes.root}>
       <MuiPickersUtilsProvider utils={MomentUtils}>
-        <Grid container justify='space-evenly'>
+        <Grid container justify="space-evenly">
           <KeyboardDatePicker
-            margin='normal'
-            id='date-picker-dialog'
-            label='Order Date'
-            views={['year', 'month', 'date']}
+            margin="normal"
+            id="date-picker-dialog"
+            label="Order Date"
+            views={["year", "month", "date"]}
             value={selectedDate}
-            format='MM/DD/YYYY'
+            format="MM/DD/YYYY"
             onChange={handleDateChange}
             KeyboardButtonProps={{
-              'aria-label': 'change date',
+              "aria-label": "change date",
             }}
           />
         </Grid>
       </MuiPickersUtilsProvider>
 
       <TableContainer className={classes.container}>
-        <Table stickyHeader aria-label='sticky table'>
+        <Table stickyHeader aria-label="sticky table">
           <TableHead>
             <TableRow>
               {columns.map((column) => (
@@ -151,7 +151,7 @@ const ViewOrders = () => {
                   return (
                     <TableRow
                       hover
-                      role='checkbox'
+                      role="checkbox"
                       tabIndex={-1}
                       key={uuid()}
                       className={classes.tableRow}
@@ -164,8 +164,8 @@ const ViewOrders = () => {
                             align={column.align}
                             onClick={() => handleClick(row.scono)}
                           >
-                            {column.format && column.format === 'date'
-                              ? moment(value).format('L LT')
+                            {column.format && column.format === "date"
+                              ? moment(value).format("L LT")
                               : value}
                           </StyledTableCell>
                         );
@@ -178,7 +178,7 @@ const ViewOrders = () => {
       </TableContainer>
       <TablePagination
         rowsPerPageOptions={[10, 25, 100]}
-        component='div'
+        component="div"
         count={orders ? orders.length : 0}
         rowsPerPage={rowsPerPage}
         page={page}

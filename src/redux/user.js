@@ -1,9 +1,9 @@
-import axios from 'axios';
-import ACTIONS from './app.constants';
+import axios from "axios";
+import ACTIONS from "./app.constants";
 
 //For Nisa Sultan Gulber
-// const BASE_URL = 'https://192.168.10.2:8443/api';
-const BASE_URL = 'https://192.168.10.201:8443/api';
+// const BASE_URL = 'https://192.168.1.2:8443/api';
+const BASE_URL = "https://192.168.10.201:8443/api";
 //For Nisa Sultan Johar Town
 //const BASE_URL = 'https://192.168.18.2:8443/api';
 
@@ -16,7 +16,6 @@ const setUser = (userObj) => {
     type: ACTIONS.SET_USER,
     payload: userObj,
   };
-  
 };
 
 const setLoginError = (error) => {
@@ -43,8 +42,8 @@ const signIn = (userObj) => (dispatch) => {
       {},
       {
         headers: {
-          'Access-Control-Allow-Origin': '*',
-          'Access-Control-Allow-Credentials': true,
+          "Access-Control-Allow-Origin": "*",
+          "Access-Control-Allow-Credentials": true,
         },
       }
     )
@@ -58,17 +57,17 @@ const signIn = (userObj) => (dispatch) => {
           })
         );
       } else {
-        dispatch(setLoginError('Incorrect username or password'));
+        dispatch(setLoginError("Incorrect username or password"));
       }
     })
     .catch(function (error) {
       // handle error
-      let errorMessage = 'Network Error';
+      let errorMessage = "Network Error";
       if (error.response) {
         errorMessage = error.response.data.message;
         errorMessage =
-          errorMessage === 'WRONG_CREDENTIAL'
-            ? 'Incorrect username or password'
+          errorMessage === "WRONG_CREDENTIAL"
+            ? "Incorrect username or password"
             : errorMessage;
         //User does not exist. Sign up for an account
       }
@@ -84,8 +83,8 @@ const signUp = (userObj) => (dispatch) => {
     type: ACTIONS.SIGN_UP,
   });
   axios({
-    method: 'post',
-    url: 'http://localhost:3000/api/user/register ',
+    method: "post",
+    url: "http://localhost:3000/api/user/register ",
     data: {
       username: userObj.username,
       password: userObj.password,
@@ -102,12 +101,12 @@ const signUp = (userObj) => (dispatch) => {
     })
     .catch(function (error) {
       // handle error
-      let errorMessage = 'Network Error';
+      let errorMessage = "Network Error";
       if (error.response) {
         errorMessage = error.response.data.message;
         errorMessage =
-          errorMessage === 'USERNAME_IS_NOT_AVAILABLE'
-            ? 'Username/Email is not available'
+          errorMessage === "USERNAME_IS_NOT_AVAILABLE"
+            ? "Username/Email is not available"
             : errorMessage;
       }
       dispatch(setSignupError(errorMessage));
@@ -126,7 +125,7 @@ const getMainCategoriesBegin = () => (dispatch) => {
     loading: true,
   });
   axios({
-    method: 'get',
+    method: "get",
     url: `${BASE_URL}/Catagories`,
   })
     .then(function (response) {
@@ -156,7 +155,7 @@ const getTablesBegin = () => (dispatch) => {
     loading: true,
   });
   axios({
-    method: 'get',
+    method: "get",
     url: `${BASE_URL}/Tables`,
   })
     .then(function (response) {
@@ -189,7 +188,7 @@ const getWaitersBegin = () => (dispatch) => {
     loading: true,
   });
   axios({
-    method: 'get',
+    method: "get",
     url: `${BASE_URL}/Waiters`,
   })
     .then(function (response) {
@@ -222,7 +221,7 @@ const getSalesPersonBegin = () => (dispatch) => {
     loading: true,
   });
   axios({
-    method: 'get',
+    method: "get",
     url: `${BASE_URL}/SalePerson`,
   })
     .then(function (response) {
@@ -231,6 +230,7 @@ const getSalesPersonBegin = () => (dispatch) => {
         loading: false,
         data: response.data,
       });
+      dispatch({ type: ACTIONS.SET_REFRESH_DATA, isRefresh: false });
     })
     .catch(function (error) {
       // handle error
@@ -240,6 +240,7 @@ const getSalesPersonBegin = () => (dispatch) => {
         loading: false,
         error: true,
       });
+      dispatch({ type: ACTIONS.SET_REFRESH_DATA, isRefresh: false });
     });
 };
 
@@ -253,7 +254,7 @@ const getOrdersByLoggedInWaiter = (waiterId, selectedDate) => (dispatch) => {
     loading: true,
   });
   axios({
-    method: 'get',
+    method: "get",
     url: `${BASE_URL}/GetOrdersByWaiterId/${waiterId}?date=${selectedDate}`,
   })
     .then(function (response) {
@@ -283,7 +284,7 @@ const getOrderDetails = (orderNo) => (dispatch) => {
     loading: true,
   });
   axios({
-    method: 'get',
+    method: "get",
     url: `${BASE_URL}/GetOrderDetails/${orderNo}`,
   })
     .then(function (response) {
@@ -317,7 +318,7 @@ const getSubCategoriesByIdBegin = (id, selectedCategoryId) => (dispatch) => {
     loading: true,
   });
   axios({
-    method: 'get',
+    method: "get",
     url: `${BASE_URL}/Items/${id}`,
   })
     .then(function (response) {
@@ -327,6 +328,7 @@ const getSubCategoriesByIdBegin = (id, selectedCategoryId) => (dispatch) => {
         data: response.data,
         categoryId: id,
       });
+      
     })
     .catch(function (error) {
       // handle error
@@ -381,6 +383,9 @@ export const saveOrderBegin = (payload) => (dispatch) => {
         });
         dispatch({
           type: ACTIONS.RESET_ORDER_NO,
+        });
+        dispatch({
+          type: ACTIONS.RESET_STATE,
         });
         dispatch(actions.getTablesBegin());
       }, 3000);
@@ -454,6 +459,13 @@ export const setRemarks = (remarks) => (dispatch) => {
   });
 };
 
+export const setGuests = (noOfGuests) => (dispatch) => {
+  dispatch({
+    type: ACTIONS.SET_NO_OF_GUESTS,
+    noOfGuests,
+  });
+};
+
 export const setSelectedSalePerson = (salePersonId) => (dispatch) => {
   dispatch({
     type: ACTIONS.SET_SELECTED_WAITER,
@@ -479,6 +491,13 @@ export const setEditMode = (isEdit) => (dispatch) => {
   dispatch({
     type: ACTIONS.SET_EDIT_MODE,
     data: isEdit,
+  });
+};
+
+export const setRefreshStatus = (isRefresh) => (dispatch) => {
+  dispatch({
+    type: ACTIONS.SET_REFRESH_DATA,
+    isRefresh,
   });
 };
 
@@ -513,4 +532,6 @@ export const actions = {
   setEditMode,
   updateOrderBegin,
   resetState,
+  setGuests,
+  setRefreshStatus
 };

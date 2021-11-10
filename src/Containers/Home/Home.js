@@ -1,20 +1,20 @@
-import React, { memo, useEffect, useState } from 'react';
-import Snackbar from '@material-ui/core/Snackbar';
-import MuiAlert from '@material-ui/lab/Alert';
-import { useSelector, useDispatch } from 'react-redux';
-import { Box, Grid, Paper, TextField, Typography } from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
-import { actions } from '../../redux/user';
-import Loader from '../../Components/Loader';
-import Tabs from '../../Components/Tabs';
-import Select from '../../Components/Select';
-import Table from '../../Components/Table';
+import React, { memo, useEffect, useState } from "react";
+import Snackbar from "@material-ui/core/Snackbar";
+import MuiAlert from "@material-ui/lab/Alert";
+import { useSelector, useDispatch } from "react-redux";
+import { Box, Grid, Paper, TextField, Typography } from "@material-ui/core";
+import { makeStyles } from "@material-ui/core/styles";
+import { actions } from "../../redux/user";
+import Loader from "../../Components/Loader";
+import Tabs from "../../Components/Tabs";
+import Select from "../../Components/Select";
+import Table from "../../Components/Table";
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    '& > *': {
+    "& > *": {
       margin: theme.spacing(1),
-      width: '100%',
+      width: "100%",
     },
   },
   container: {
@@ -23,23 +23,23 @@ const useStyles = makeStyles((theme) => ({
   },
   paper: {
     padding: theme.spacing(2),
-    textAlign: 'center',
+    textAlign: "center",
     color: theme.palette.text.secondary,
   },
-  '& > *': {
+  "& > *": {
     margin: theme.spacing(1),
-    width: '25ch',
+    width: "25ch",
   },
   alert: {
-    width: '100%',
-    '& > * + *': {
+    width: "100%",
+    "& > * + *": {
       marginTop: theme.spacing(2),
     },
   },
 }));
 
 function Alert(props) {
-  return <MuiAlert elevation={6} variant='filled' {...props} />;
+  return <MuiAlert elevation={6} variant="filled" {...props} />;
 }
 
 const Home = () => {
@@ -106,6 +106,10 @@ const Home = () => {
     return state.user.remarks;
   });
 
+  const noOfGuests = useSelector((state) => {
+    return state.user.noOfGuests;
+  });
+
   const isOrderSaved = useSelector((state) => {
     return state.user.isOrderSaved;
   });
@@ -118,13 +122,19 @@ const Home = () => {
     return state.user.isEdit;
   });
 
+  const isRefresh = useSelector((state) => {
+    return state.user.isRefresh;
+  });
+
   const dispatch = useDispatch();
   useEffect(() => {
-    dispatch(actions.getMainCategoriesBegin());
-    dispatch(actions.getTablesBegin());
-    dispatch(actions.getWaitersBegin());
-    dispatch(actions.getSalesPersonBegin());
-  }, [dispatch]);
+    if (isRefresh) {
+      dispatch(actions.getMainCategoriesBegin());
+      dispatch(actions.getTablesBegin());
+      dispatch(actions.getWaitersBegin());
+      dispatch(actions.getSalesPersonBegin());
+    }
+  }, [dispatch, isRefresh]);
 
   useEffect(() => {
     if (
@@ -171,6 +181,12 @@ const Home = () => {
     dispatch(actions.setRemarks(event.target.value));
   };
 
+  const handleNoOfGuestsChange = (event) => {
+    if (event.target.value >= 0) {
+      dispatch(actions.setGuests(event.target.value));
+    }
+  };
+
   const handleSave = () => {
     const totalQuantity = selectedItems.reduce(
       (accumulator, current) => accumulator + current.quantity,
@@ -200,6 +216,7 @@ const Home = () => {
       TableCode: selectedTable,
       EmpNo: selectedSalePerson,
       items: filteredItems,
+      noOfGuests,
     };
 
     isEditMode
@@ -234,10 +251,10 @@ const Home = () => {
           <Snackbar
             open={isOrderSaved}
             autoHideDuration={3000}
-            anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+            anchorOrigin={{ vertical: "top", horizontal: "center" }}
           >
-            <Alert severity='success'>
-              Your order has been {isEditMode ? 'updated' : 'saved'}{' '}
+            <Alert severity="success">
+              Your order has been {isEditMode ? "updated" : "saved"}{" "}
               successfully
             </Alert>
           </Snackbar>
@@ -256,10 +273,10 @@ const Home = () => {
         <Grid item xs={12} sm={6}>
           {isEditMode ? (
             <Box
-              style={{ padding: '20px', display: 'flex', alignItems: 'center' }}
+              style={{ padding: "20px", display: "flex", alignItems: "center" }}
             >
-              <Typography variant='h4'>Table</Typography> ________
-              <Typography variant='h6'>{selectedTableName}</Typography>
+              <Typography variant="h4">Table</Typography> ________
+              <Typography variant="h6">{selectedTableName}</Typography>
             </Box>
           ) : (
             list.length && (
@@ -271,12 +288,25 @@ const Home = () => {
             )
           )}
         </Grid>
-        <Grid item xs={12} sm={12} lg={12}>
+        <Grid item xs={3} sm={3} lg={3}>
           <Box className={classes.root}>
             <TextField
-              id='remarks-basic'
-              label='Remarks'
-              variant='outlined'
+              id="no-of-guests-basic"
+              label="No of Guests"
+              variant="outlined"
+              value={noOfGuests}
+              inputProps={{ min: 0 }} 
+              
+              onChange={handleNoOfGuestsChange}
+            />
+          </Box>
+        </Grid>
+        <Grid item xs={9} sm={9} lg={9}>
+          <Box className={classes.root}>
+            <TextField
+              id="remarks-basic"
+              label="Remarks"
+              variant="outlined"
               value={remarks}
               onChange={handleRemarksChange}
             />
@@ -302,6 +332,7 @@ const Home = () => {
           <Grid item xs={6} sm={6} md={6} lg={6}>
             <Paper className={classes.paper}>
               <Table
+                noOfGuests={noOfGuests}
                 remarks={remarks}
                 tablesList={tablesList}
                 isEditMode={isEditMode}

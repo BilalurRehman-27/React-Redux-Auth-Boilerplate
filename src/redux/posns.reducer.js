@@ -1,4 +1,5 @@
-import ACTIONS from './app.constants';
+import ACTIONS from "./app.constants";
+import { uniqBy } from "lodash";
 const initialState = {
   profileName: null,
   isLoggedIn: false,
@@ -7,6 +8,7 @@ const initialState = {
   loginError: null,
   signupError: null,
   selectedItems: [],
+  isRefresh: true,
 };
 
 const currentUser = (state = initialState, action) => {
@@ -71,7 +73,7 @@ const currentUser = (state = initialState, action) => {
       return {
         ...state,
         isFetching: false,
-        mainCategories: { name: 'Main Category', data: formattedCategories },
+        mainCategories: { name: "Main Category", data: formattedCategories },
       };
     case ACTIONS.GET_MAIN_CATEGORIES.ERROR:
       return {
@@ -95,7 +97,7 @@ const currentUser = (state = initialState, action) => {
       return {
         ...state,
         isFetching: false,
-        tables: { name: 'Tables', data: formattedTablesList },
+        tables: { name: "Tables", data: formattedTablesList },
       };
     case ACTIONS.GET_TABLES.ERROR:
       return {
@@ -119,7 +121,7 @@ const currentUser = (state = initialState, action) => {
       return {
         ...state,
         isFetching: false,
-        waiters: { name: 'Waiters', data: formattedWaitersList },
+        waiters: { name: "Waiters", data: formattedWaitersList },
       };
     case ACTIONS.GET_WAITERS.ERROR:
       return {
@@ -143,7 +145,7 @@ const currentUser = (state = initialState, action) => {
       return {
         ...state,
         isFetching: false,
-        salePersons: { name: 'SalePersons', data: formattedSalePersonsList },
+        salePersons: { name: "SalePersons", data: formattedSalePersonsList },
       };
     case ACTIONS.GET_SALES_PERSON.ERROR:
       return {
@@ -173,7 +175,7 @@ const currentUser = (state = initialState, action) => {
         subCategories: {
           ...state.subCategories,
           subCategoryFetching: false,
-          name: 'SubCategories',
+          name: "SubCategories",
           categoryId: action.categoryId,
           [action.categoryId]: formattedSubCategories,
         },
@@ -196,18 +198,38 @@ const currentUser = (state = initialState, action) => {
 
     case ACTIONS.SET_SELECTED_SUB_CATEGORY_ITEM: {
       const prevSelectedItems = state.selectedItems ?? [];
-      const selectedItems = prevSelectedItems.concat(action.subCategoryItem);
+      const selectedItems = [...prevSelectedItems, action.subCategoryItem];
       const currentItem = action.subCategoryItem;
+      const isEditMode = state.isEdit;
 
-      const uniqueList = [
-        ...new Map(selectedItems.map((item) => [item['id'], item])).values(),
-      ];
+      const uniqueList = uniqBy(selectedItems, "id");
+
+      //  [
+      //   ...new Map(selectedItems.map((item) => [item["id"], item])).values(),
+      // ];
+
+      const originalQuantity =
+        uniqueList.find((item) => item.id === currentItem.id)
+          .originalQuantity ?? 0;
 
       const prevQuantity =
         uniqueList.find((item) => item.id === currentItem.id).quantity ?? 0;
+      const isPrevItemOld =
+        uniqueList.find((item) => item.id === currentItem.id).isItemOld ??
+        false;
+      console.log("isPrevItemOld", isPrevItemOld);
+      const currentQuantity = (uniqueList.find(
+        (item) => item.id === currentItem.id
+      ).quantity = prevQuantity + 1);
 
-      uniqueList.find((item) => item.id === currentItem.id).quantity =
-        prevQuantity + 1;
+      isEditMode &&
+        (uniqueList.find((item) => item.id === currentItem.id).updatedQuantity =
+          currentQuantity - originalQuantity);
+
+      isEditMode &&
+        (uniqueList.find(
+          (item) => item.id === currentItem.id
+        ).isItemOld = false);
 
       return {
         ...state,
@@ -227,6 +249,13 @@ const currentUser = (state = initialState, action) => {
       return {
         ...state,
         remarks: action.remarks,
+      };
+    }
+
+    case ACTIONS.SET_NO_OF_GUESTS: {
+      return {
+        ...state,
+        noOfGuests: action.noOfGuests,
       };
     }
 
@@ -254,16 +283,18 @@ const currentUser = (state = initialState, action) => {
       const mainCategories = state.mainCategories.data;
       const subCategories = state.subCategories;
       const orderNo = action.data;
+      const remarks = state.remarks;
 
       mainCategories.forEach((category) => {
-        subCategories[category.id].forEach((item) => (item.quantity = 0));
+        subCategories[category.id] &&
+          subCategories[category.id].forEach((item) => (item.quantity = 0));
       });
 
       return {
         ...state,
         subCategories: subCategories,
-        selectedSalePerson: '',
-        remarks: '',
+        selectedSalePerson: "",
+        remarks: remarks,
         isFetching: false,
         isOrderSaved: true,
         orderNo: orderNo,
@@ -294,18 +325,20 @@ const currentUser = (state = initialState, action) => {
       const subCategories = state.subCategories;
 
       mainCategories.forEach((category) => {
-        subCategories[category.id].forEach((item) => (item.quantity = 0));
+        subCategories[category.id] &&
+          subCategories[category.id].forEach((item) => (item.quantity = 0));
       });
 
       return {
         ...state,
         selectedItems: [],
         subCategories: subCategories,
-        selectedTable: '',
-        selectedSalePerson: '',
-        remarks: '',
+        selectedTable: "",
+        selectedSalePerson: "",
+        remarks: "",
         isFetching: false,
         isOrderSaved: true,
+        noOfGuests: "",
       };
     }
     case ACTIONS.UPDATE_ORDER.ERROR: {
@@ -319,7 +352,7 @@ const currentUser = (state = initialState, action) => {
       return {
         ...state,
         isOrderSaved: false,
-        selectedTable: '',
+        selectedTable: "",
         selectedItems: [],
       };
     }
@@ -372,6 +405,7 @@ const currentUser = (state = initialState, action) => {
         selectedSalePerson: action.data[0].selectedSalePerson,
         selectedTable: action.data[0].tableCode,
         selectedTableName: action.data[0].tableName,
+        noOfGuests: action.data[0].noOfGuests,
       };
     case ACTIONS.GET_ORDER_DETAILS.ERROR:
       return {
@@ -392,18 +426,26 @@ const currentUser = (state = initialState, action) => {
       const subCategories = state.subCategories;
 
       mainCategories.forEach((category) => {
-        subCategories[category.id].forEach((item) => (item.quantity = 0));
+        subCategories[category.id] &&
+          subCategories[category.id].forEach((item) => (item.quantity = 0));
       });
       return {
         ...state,
+        noOfGuests: "",
         selectedItems: [],
         subCategories: subCategories,
-        selectedTable: '',
-        selectedSalePerson: '',
-        remarks: '',
+        selectedTable: "",
+        selectedSalePerson: "",
+        remarks: "",
         isFetching: false,
         isOrderSaved: false,
         isEdit: false,
+      };
+    }
+    case ACTIONS.SET_REFRESH_DATA: {
+      return {
+        ...state,
+        isRefresh: action.isRefresh,
       };
     }
     default:

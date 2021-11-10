@@ -34,6 +34,9 @@ const useStyles = makeStyles((theme) => ({
   link: {
     margin: theme.spacing(1, 1.5),
   },
+  refreshBtnMargin:{
+    marginRight:10
+  }
 }));
 
 export default function Header({ isLoggedIn }) {
@@ -45,6 +48,15 @@ export default function Header({ isLoggedIn }) {
 
   const loginStatus = () => {
     return isLoggedIn ? (
+      <>
+       <Button
+              variant='contained'
+              color='default'
+              className={classes.refreshBtnMargin}
+              onClick={()=>dispatch(actions.setRefreshStatus(true))}
+              >
+              {"Refresh"}
+            </Button>
       <PopupState variant='popover' popupId='demo-popup-popover'>
         {(popupState) => (
           <div>
@@ -80,6 +92,7 @@ export default function Header({ isLoggedIn }) {
           </div>
         )}
       </PopupState>
+      </>
     ) : (
       <Button
         component={RouterLink}
@@ -108,7 +121,7 @@ export default function Header({ isLoggedIn }) {
           className={classes.toolbarTitle}
         >
           <Link component={RouterLink} to='/'>
-            Nisa Sultan
+          NISA SULTAN
           </Link>
         </Typography>
         <nav>
